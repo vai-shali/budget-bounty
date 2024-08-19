@@ -1,71 +1,59 @@
 package com.example.budget_bounty.model;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class User {
-    private String firstName;
-    private String lastName;
+//    private String firstName;
+//    private String lastName;
     private String username;
     private int id;
     private String phone;
     private String email;
     private String password;
+    private Bank bankDetails;
+    private List<Transaction> transactions = new ArrayList<>();
 
-    public User(String firstName, String lastName, String username, int id, String phone, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+
+    public User(String username, String email, String phone, Bank bankDetails, String password) {
         this.username = username;
-        this.id = id;
-        this.phone = phone;
         this.email = email;
+        this.phone = phone;
+        this.bankDetails = bankDetails;
         this.password = password;
     }
 
+
     public User() {}
 
-    public void inputUserDetails() {
-        Scanner scanner = new Scanner(System.in);
+//    public String getFirstName() {
+//        return firstName;
+//    }
+//
+//    public void setFirstName(String firstName) {
+//        this.firstName = firstName;
+//    }
+//
+//    public String getLastName() {
+//        return lastName;
+//    }
+//
+//    public void setLastName(String lastName) {
+//        this.lastName = lastName;
+//    }
 
-        System.out.print("Enter First Name: ");
-        this.firstName = scanner.nextLine();
-
-        System.out.print("Enter Last Name: ");
-        this.lastName = scanner.nextLine();
-
-        System.out.print("Enter Username: ");
-        this.username = scanner.nextLine();
-
-        System.out.print("Enter ID: ");
-        this.id = scanner.nextInt();
-        scanner.nextLine(); 
-
-        System.out.print("Enter Phone Number: ");
-        this.phone = scanner.nextLine();
-
-        System.out.print("Enter Email: ");
-        this.email = scanner.nextLine();
-
-        System.out.print("Enter Password: ");
-        this.password = scanner.nextLine();
-        scanner.close();
+    public Bank getBankDetails() {
+        return bankDetails;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+    
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
+    
     public String getUsername() {
         return username;
     }
@@ -119,13 +107,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", id=" + id +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "UserName: " + username + "\nEmail: " + email + "\nPhone: " + phone + "\n" + bankDetails.toString();
     }
 }
