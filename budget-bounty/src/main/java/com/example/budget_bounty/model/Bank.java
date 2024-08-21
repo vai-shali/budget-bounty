@@ -8,13 +8,15 @@ public class Bank {
     private String accountNumber;
     private String ifscCode;
     private String upiId;
+    private String email;
     private double balance;
 
-    public Bank(String bankName, String accountNumber, String ifscCode, double balance) {
+    public Bank(String bankName, String accountNumber, String ifscCode, double balance, String email) {
         this.bankName = bankName;
         this.accountNumber = accountNumber;
         this.ifscCode = ifscCode;
         this.balance = balance;
+        this.email = email;
     }
 
     public void setUpiId(String upiId) {
@@ -27,6 +29,14 @@ public class Bank {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+    
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
     
     @Override

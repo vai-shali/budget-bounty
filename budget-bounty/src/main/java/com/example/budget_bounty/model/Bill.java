@@ -11,8 +11,16 @@ public class Bill {
     private double totalAmount;
     private Date dueDate;
     private int userId;
+    private boolean paid; //(true/false) new addition during testing phase
+    
 
-    public Bill(int id, String paymentMethod, double amount, double tax, Date dueDate, int userId) {
+    public Bill(int id, String paymentMethod, double amount, double tax, Date dueDate, int userId, boolean paid) {
+    	if(dueDate == null) {
+    		throw new IllegalArgumentException("Due Date cannot be null!");
+    	}
+    	if(amount <= 0) {
+    		throw new IllegalArgumentException("Amount cannot be zero or negative!");
+    	}
         this.id = id;
         this.paymentMethod = paymentMethod;
         this.amount = amount;
@@ -20,6 +28,12 @@ public class Bill {
         this.totalAmount = amount + tax;
         this.dueDate = dueDate;
         this.userId = userId;
+        this.paid = paid;
+    }
+
+    // Overloaded constructor with default value for 'paid'
+    public Bill(int id, String paymentMethod, double amount, double tax, Date dueDate, int userId) {
+        this(id, paymentMethod, amount, tax, dueDate, userId, false); // Default 'paid' is false
     }
 
     public int getId() {
@@ -43,6 +57,9 @@ public class Bill {
     }
 
     public void setAmount(double amount) {
+    	if(amount <= 0) {
+    		throw new IllegalArgumentException("Amount cannot be zero or negative!");
+    	}
         this.amount = amount;
         this.totalAmount = amount + this.tax; // Update totalAmount when amount changes
     }
@@ -59,12 +76,23 @@ public class Bill {
     public double getTotalAmount() {
         return totalAmount;
     }
+    
+    public boolean getPaid() {
+    	return paid;
+    }
+    
+    public void setPaid(boolean paid) {
+    	this.paid = paid;
+    }
 
     public Date getDueDate() {
         return dueDate;
     }
 
     public void setDueDate(Date dueDate) {
+    	if(dueDate == null) {
+    		throw new IllegalArgumentException("Due Date cannot be null!");
+    	}
         this.dueDate = dueDate;
     }
 
@@ -78,6 +106,8 @@ public class Bill {
 
     public String getBillStatus() {
         Date currentDate = new Date();
+        if(paid)
+        	return "Paid";
         if (currentDate.after(dueDate)) {
             return "Overdue";
         } else {
@@ -87,7 +117,7 @@ public class Bill {
 
     @Override
     public String toString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return "Bill{" +
                 "id=" + id +
                 ", paymentMethod='" + paymentMethod + '\'' +

@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.example.budget_bounty.exception.InvalidPaymentException;
+
 public class PaymentScheduler {
     private List<Bill> scheduledBills;
+    // reminders
+    // For each bill- scheduledDate, recurring/non, auto-pay/not
 
     public PaymentScheduler() {
         this.scheduledBills = new ArrayList<>();
@@ -18,8 +22,12 @@ public class PaymentScheduler {
     public void removeBill(Bill bill) {
         scheduledBills.remove(bill);
     }
+    
+    public List<Bill> getBills() {
+    	return scheduledBills;
+    }
 
-    public void processPayments(User user) {
+    public void processPayments(User user) throws InvalidPaymentException {
         for (Bill bill : scheduledBills) {
             if (new Date().before(bill.getDueDate())) {
                 user.makePayment(bill);

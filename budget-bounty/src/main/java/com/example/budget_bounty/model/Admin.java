@@ -1,5 +1,7 @@
 package com.example.budget_bounty.model;
 
+import com.example.budget_bounty.exception.InvalidPaymentException;
+
 public class Admin {
 	private PaymentScheduler paymentScheduler;
 
@@ -22,7 +24,7 @@ public class Admin {
         paymentScheduler.viewScheduledBills();
     }
 
-    public void processAllPayments(User user) {
+    public void processAllPayments(User user) throws InvalidPaymentException {
         paymentScheduler.processPayments(user);
     }
 }

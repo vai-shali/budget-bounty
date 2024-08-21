@@ -1,8 +1,14 @@
 package com.example.budget_bounty.model;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import java.util.*;
+import com.example.budget_bounty.exception.InvalidPaymentException;
 
 public class User {
+	private static int idCounter = 1;
 //    private String firstName;
 //    private String lastName;
     private String username;
@@ -15,7 +21,8 @@ public class User {
 
 
     public User(String username, String email, String phone, Bank bankDetails, String password) {
-        this.username = username;
+        this.id = idCounter++;
+    	this.username = username;
         this.email = email;
         this.phone = phone;
         this.bankDetails = bankDetails;
@@ -42,7 +49,11 @@ public class User {
 //    }
 
     public Bank getBankDetails() {
-        return bankDetails;
+        return this.bankDetails;
+    }
+    
+    public void setBankDetails(Bank bankDetails) {
+    	this.bankDetails = bankDetails;
     }
 
     public List<Transaction> getTransactions() {
@@ -50,7 +61,10 @@ public class User {
     }
     
     public void addTransaction(Transaction transaction) {
-        transactions.add(transaction);
+        if(transaction != null)
+        	transactions.add(transaction);
+        else 
+        	System.out.println("Cannot add a null transaction!!");
     }
 
     
@@ -93,20 +107,47 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    private boolean isValidDate(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); // Adjust the format as per your requirement
+        sdf.setLenient(false);
+        try {
+            Date date = sdf.parse(dateStr);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 
     // Method to schedule a payment with a PaymentScheduler instance
     public void schedulePayment(Bill bill, String paymentDate, PaymentScheduler scheduler) {
-        scheduler.addBill(bill);
-        System.out.println("Payment of $" + bill.getTotalAmount() + " scheduled for " + paymentDate + " for bill ID: " + bill.getId());
+    
+    	if (bill != null) {
+            // Validate paymentDate
+            if (isValidDate(paymentDate)) {
+                scheduler.addBill(bill);
+                System.out.println("Payment of $" + bill.getTotalAmount() + " scheduled for " + paymentDate + " for bill ID: " + bill.getId());
+            } else {
+                System.out.println("Invalid payment date: " + paymentDate + "\nCannot add bill!!");
+         
+            }
+        } else {
+            System.out.println("Cannot schedule null Bill!!");
+        }
     }
 
     // Method to make a payment
-    public void makePayment(Bill bill) {
+    public void makePayment(Bill bill) throws InvalidPaymentException{
+    	if(bill.getAmount() <= 0)
+    	{
+    		throw new InvalidPaymentException("Invalid payment amount!!");
+    	}
         System.out.println("Payment of $" + bill.getTotalAmount() + " made for bill ID: " + bill.getId());
     }
 
     @Override
     public String toString() {
-        return "UserName: " + username + "\nEmail: " + email + "\nPhone: " + phone + "\n" + bankDetails.toString();
+        return "UserName: " + username + "\nEmail: " + email + "\nPhone: " + phone + "\n" 
+    + (bankDetails!=null ?bankDetails.toString() : "No Bank details to display");
     }
 }

@@ -11,6 +11,18 @@ public class Transaction {
     private String referenceNumber;
 
     public Transaction(String transactionFrom, String transactionTo, double amount, Date transactionDate, String referenceNumber) {
+    	if(transactionFrom == null)
+    	{
+    		throw new IllegalArgumentException("transactionFrom cannot be null");
+    	}
+    	if(transactionTo == null)
+    	{
+    		throw new IllegalArgumentException("transactionTo cannot be null");
+    	}
+    	if(transactionDate == null)
+    	{
+    		throw new IllegalArgumentException("transactionDate cannot be null");
+    	}
         this.transactionFrom = transactionFrom;
         this.transactionTo = transactionTo;
         this.amount = amount;
