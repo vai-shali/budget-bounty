@@ -16,11 +16,19 @@ public class PaymentScheduler {
     }
 
     public void addBill(Bill bill) {
+        if (bill == null) {
+            throw new IllegalArgumentException("Bill cannot be null");
+        }
         scheduledBills.add(bill);
     }
 
     public void removeBill(Bill bill) {
-        scheduledBills.remove(bill);
+    	if(scheduledBills.contains(bill))
+    		scheduledBills.remove(bill);
+    	else {
+    		throw new IllegalArgumentException("Bill not found in the scheduled bills list");
+    	}
+    		
     }
     
     public List<Bill> getBills() {
@@ -28,7 +36,9 @@ public class PaymentScheduler {
     }
 
     public void processPayments(User user) throws InvalidPaymentException {
-        for (Bill bill : scheduledBills) {
+        if(user == null)
+        	throw new InvalidPaymentException("User cannot be null!");
+    	for (Bill bill : scheduledBills) {
             if (new Date().before(bill.getDueDate())) {
                 user.makePayment(bill);
             } else {

@@ -8,6 +8,10 @@ public class Admin {
     public Admin() {
         this.paymentScheduler = new PaymentScheduler();
     }
+    
+    public PaymentScheduler getPaymentScheduler() {
+    	return paymentScheduler;
+    }
 
     public void scheduleBill(Bill bill) {
         paymentScheduler.addBill(bill);
