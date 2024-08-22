@@ -16,11 +16,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.example.budget_bounty.exception.InvalidPaymentException;
-
+/**
+ * @author Vaishali Ganesh Kumar
+ */
 public class AdminTest {
 	Admin admin;
 	Bill bill;
-	
+	/**
+	 * Sets Testing Env
+	 * @throws ParseException
+	 */
 	@BeforeEach
 	public void setup() throws ParseException {
 		admin = new Admin();
@@ -32,7 +37,9 @@ public class AdminTest {
 	}
 	
 	//positive cases
-
+	/**
+	 * Test Scheduling Bills
+	 */
 	@Test
 	public void testScheduleBill() {
 
@@ -45,7 +52,10 @@ public class AdminTest {
 		assertFalse(admin.getPaymentScheduler().getBills().contains(bill));
 
 	}
-	
+	/**
+	 * Tests the processing of a scheduled payment
+	 * @throws InvalidPaymentException
+	 */
 	@Test
 	public void testProcessPayments() throws InvalidPaymentException {
 		User user = mock(User.class);
@@ -56,14 +66,18 @@ public class AdminTest {
 	}
 
 	//negative cases
-	
+	/**
+	 * Test adverse conditions
+	 */
 	@Test
 	public void testScheduleNullBill() {
 		assertThrows(IllegalArgumentException.class, ()->{
 			admin.scheduleBill(null);
 		});
 	}
-	
+	/**
+	 * Test adverse conditions
+	 */
 	@Test
 	public void testUnscheduleNullBill() {
 	    
@@ -71,7 +85,9 @@ public class AdminTest {
 	        admin.unscheduleBill(null);
 	    });
 	}
-	
+	/**
+	 * Test adverse conditions
+	 */
 	@Test
 	public void testProcessPaymentsWithNullUser() {
 	    
@@ -81,7 +97,10 @@ public class AdminTest {
 	        admin.processAllPayments(null);
 	    });
 	}
-	
+	/**
+	 * Test adverse conditions
+	 * @throws InvalidPaymentException
+	 */
 	@Test
 	public void testProcessPaymentsWithNoScheduledBills() throws InvalidPaymentException {
 	    User user = mock(User.class);

@@ -13,17 +13,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.example.budget_bounty.exception.InvalidPaymentException;
-
+/**
+ * @author Vishal Lodha
+ * @since 19th Aug,2024.
+ */
 public class PaymentSchedulerTest {
 	
 	private PaymentScheduler scheduler;
 	private User mockUser;
-	
+	/**
+	 * Set up testing env.
+	 */
 	@BeforeEach
 	public void setup() {
 		scheduler = new PaymentScheduler();
 	}
-	
+	/**
+	 * Check if a new Bill is added into the Scheduler.
+	 */
 	@Test
 	public void testAddBill() {  //positive testcase
 	    Bill bill = new Bill(1, "Credit Card", 150.0, 15.0, new Date(), 1);
@@ -33,7 +40,9 @@ public class PaymentSchedulerTest {
 	    // Verify that the bill was added to the scheduledBills list
 	    assertTrue(scheduler.getBills().contains(bill));
 	}
-	
+	/**
+	 * Tests Descheduling of a bill.
+	 */
 	@Test
 	public void testRemoveBill() { //positive testcase
 	    Bill bill = new Bill(1, "Credit Card", 150.0, 15.0, new Date(), 1);
@@ -44,7 +53,9 @@ public class PaymentSchedulerTest {
 	    // Verify that the bill was removed from the scheduledBills list
 	    assertFalse(scheduler.getBills().contains(bill));
 	}
-	
+	/**
+	 * Checks Adverse Conditions
+	 */
 	@Test
     public void testAddBillThrowsExceptionForNullBill() { //negative test case
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -52,7 +63,9 @@ public class PaymentSchedulerTest {
         });
         assertEquals("Bill cannot be null", exception.getMessage());
     }
-	
+	/**
+	 * Checks Adverse Conditions
+	 */
 	@Test
 	public void testRemoveBillNotInList() { //negative test case
 		Bill bill = new Bill(1, "Credit Card", 150.0, 15.0, new Date(), 1);
@@ -61,7 +74,9 @@ public class PaymentSchedulerTest {
 		});
 		assertEquals("Bill not found in the scheduled bills list",exception.getMessage());
 	}
-	
+	/**
+	 * Checks Adverse Conditions.
+	 */
 	@Test
 	public void testProcessPaymentWithNullUser() { //negative test case
 		Bill bill = new Bill(1, "Credit Card", 150.0, 15.0, new Date(), 1);
@@ -70,7 +85,10 @@ public class PaymentSchedulerTest {
 	        scheduler.processPayments(null);
 	    });
 	}
-	
+	/**
+	 * Tests and overdue bill with scheduler
+	 * @throws InvalidPaymentException
+	 */
 	@Test
     public void testProcessPaymentsWithOverdueBill() throws InvalidPaymentException {
         

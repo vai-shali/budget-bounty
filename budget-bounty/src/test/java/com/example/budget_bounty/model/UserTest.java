@@ -12,7 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.example.budget_bounty.exception.InvalidPaymentException;
-
+/**
+ * @author Vaishali Ganesh Kumar
+ * @since 19th Aug,2024.
+ */
 public class UserTest {
 
     private User user;
@@ -20,7 +23,9 @@ public class UserTest {
     private Transaction transaction;
     private Bill bill;
     private PaymentScheduler scheduler;
-
+    /**
+     * Sets up testing env
+     */
     @BeforeEach
     public void setUp() {
         bank = new Bank("BankName", "AccountNumber" ,"IFSC", 1000, "x@gmail.com");
@@ -29,7 +34,9 @@ public class UserTest {
         bill = new Bill(1, "Credit Card", 150.0, 15.0, new Date(), 1);
         scheduler = new PaymentScheduler();
     }
-
+    /**
+     * Checks User Initilizing
+     */
     @Test
     public void testUserInitialization() {
         assertEquals("john_doe", user.getUsername());
@@ -38,7 +45,9 @@ public class UserTest {
         assertEquals(bank, user.getBankDetails());
         assertEquals("password123", user.getPassword());
     }
-
+    /**
+     * Testing of adding new Transaction.
+     */
     @Test
     public void testAddTransaction() {
         user.addTransaction(transaction);
@@ -52,7 +61,9 @@ public class UserTest {
 //        // Assuming PaymentScheduler has a method to get the list of bills
 //        assertTrue(scheduler.getBills().contains(bill));
 //    }
-
+    /**
+     * Testing a immediate payment.
+     */
     @Test
     public void testMakePayment() { //positive test case
         // This will only print the message;
@@ -62,38 +73,50 @@ public class UserTest {
     		fail("Exception was not expected: "+e.getMessage());
     	}
     }
-
+    /**
+     * Testing the details of a user.
+     */
     @Test
     public void testUserToString() {
         String expectedString = "UserName: john_doe\nEmail: john.doe@example.com\nPhone: 123-456-7890\n" + bank.toString();
         assertEquals(expectedString, user.toString());
     }
-    
+    /**
+     * Test Adverse Conditions
+     */
     @Test
     public void testUserWithNullBankDetails() {
         User userWithNullBank = new User("john_doe", "john.doe@example.com", "123-456-7890", null, "password123");
         assertNull(userWithNullBank.getBankDetails());
     }
-    
+    /**
+     * Test Adverse Conditions
+     */
     @Test
     public void testEmptyTransactionsList() {
         User userWithEmptyTransactions = new User("john_doe", "john.doe@example.com", "123-456-7890", bank, "password123");
         assertTrue(userWithEmptyTransactions.getTransactions().isEmpty());
     }
-    
+    /**
+     * Test Adverse Conditions
+     */
     @Test
     public void testAddNullTransaction() {
         user.addTransaction(null);
         assertTrue(user.getTransactions().isEmpty()); // Assuming null transactions should not be added
     }
-
+    /**
+     * test Adverse Conditions
+     */
     @Test
     public void testSchedulePaymentWithInvalidDate() {
         user.schedulePayment(bill, "invalid-date", scheduler);
         // Verify if the scheduler has not added the bill, or handle as per your application's requirement
         assertFalse(scheduler.getBills().contains(bill)); // Assuming invalid dates result in no scheduling
     }
-    
+    /**
+     * Test Adverse Conditions.
+     */
     @Test
     public void testMakePaymentWithZeroAmount() { //positive test case
         try {
@@ -108,7 +131,9 @@ public class UserTest {
       
         // Verify if the system handles zero amount payments correctly
     }
-
+    /**
+     * Test Adverse Conditions
+     */
     @Test
     public void testMakePaymentWithNegativeAmount() { //positive test case
         try {
@@ -122,7 +147,9 @@ public class UserTest {
         }
         // Verify if the system handles negative amounts correctly
     }
-    
+    /**
+     * Test Adverse Conditions
+     */
     @Test
     public void testUserToStringWithNullValues() {
     	User userWithNullValues = new User(null, null, null, null, null);

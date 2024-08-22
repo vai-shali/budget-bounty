@@ -30,7 +30,11 @@ import com.example.budget_bounty.model.Bank;
 import com.example.budget_bounty.model.Transaction;
 import com.example.budget_bounty.model.User;
 
-
+/**
+ * Main File
+ * @author Amrisha Das
+ * @since 16th Aug,2024.
+ */
 @SpringBootApplication
 public class Application {
 
@@ -47,6 +51,9 @@ public class Application {
         int choice = 0;
         System.out.println("WELCOME TO BUDGET BOUNTY!");
         while (choice != 4) {
+        	// 1. Registering New User
+        	// 2. Login current User
+        	// 3. Quit.
             System.out.println("Select an option: ");
             System.out.println("1. Register");
             System.out.println("2. Login");
@@ -69,7 +76,10 @@ public class Application {
         }
         scanner.close();
     }
-    
+    /**
+     * Registering a new User
+     * @param scanner
+     */
     static void registerUser(Scanner scanner)  //input validation
     {
         System.out.println("Enter your name:");
@@ -113,7 +123,10 @@ public class Application {
         }
     }
     
-    
+    /**
+     * Loggin in a user and checking the validity of the user.
+     * @param scanner
+     */
     static void loginUser(Scanner scanner) 
     {
         System.out.println("Enter your email:");
@@ -136,7 +149,11 @@ public class Application {
             }
         }
     }
-    
+    /**
+     * Actions for a user.
+     * @param scanner
+     * @param user
+     */
     static void showMenu(Scanner scanner, User user) {
         int option = 0;
         while (option != 5) {
@@ -170,7 +187,11 @@ public class Application {
             }
         }
     }
-    
+    /**
+     * Linking UPI
+     * @param scanner
+     * @param user
+     */
     static void linkBankOrUPI(Scanner scanner, User user) {
         System.out.println("Enter your bank name:");
         String bankName = scanner.nextLine();
@@ -200,7 +221,10 @@ public class Application {
         System.out.println("Bank/UPI linked successfully.");
         showMenu(scanner, user);
     }
-    
+    /**
+     * View Past transaction for a user
+     * @param user
+     */
     static void viewPastTransactions(User user) { //differentiate between past and scheduled transaction
         System.out.println("Transactions:");
         for (Transaction transaction : user.getTransactions()) {
@@ -208,7 +232,11 @@ public class Application {
             System.out.println("----------------------------");
         }
     }
-
+    /**
+     * Scheduling a Bill
+     * @param scanner
+     * @param user
+     */
     static void scheduleBill(Scanner scanner, User user) { //functionality for recurring bills
     	String email = user.getEmail();
     	if(!bankDetailsMap.containsKey(email))
@@ -246,7 +274,10 @@ public class Application {
             System.out.println("Invalid date format.");
         }
     }
-    
+    /**
+     * Generating a reference number for a transaction.
+     * @return String
+     */
     private static String generateReferenceNumber() {
    	 String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder referenceNumber = new StringBuilder();
@@ -259,7 +290,11 @@ public class Application {
 
         return referenceNumber.toString();
    }
-
+    /**
+     * Make a immediate Payment.
+     * @param scanner
+     * @param user
+     */
 	static void makePayment(Scanner scanner, User user) {
 		
 		String email = user.getEmail();
