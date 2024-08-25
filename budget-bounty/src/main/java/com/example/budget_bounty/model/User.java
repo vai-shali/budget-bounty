@@ -31,8 +31,8 @@ public class User {
      * @param bankDetails
      * @param password
      */
-    public User(String username, String email, String phone, Bank bankDetails, String password) {
-        this.id = idCounter++;
+    public User(int id, String username, String email, String phone, Bank bankDetails, String password) {
+        this.id = id;
     	this.username = username;
         this.email = email;
         this.phone = phone;

@@ -22,12 +22,41 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <!-- Other dependencies as needed -->
+        
+        <!-- JUnit Jupiter API -->
+	    <dependency>
+	        <groupId>org.junit.jupiter</groupId>
+	        <artifactId>junit-jupiter-api</artifactId>
+	         <!-- Use the latest version if needed -->
+	        <scope>test</scope>
+	    </dependency>
+	
+	    <!-- JUnit Jupiter Engine -->
+	    <dependency>
+	        <groupId>org.junit.jupiter</groupId>
+	        <artifactId>junit-jupiter-engine</artifactId>
+	         <!-- Use the latest version if needed -->
+	        <scope>test</scope>
+	    </dependency>
+	    
+	    <dependency>
+	        <groupId>org.junit.vintage</groupId>
+	        <artifactId>junit-vintage-engine</artifactId>
+	         <!-- Use the latest version if needed -->
+	        <scope>test</scope>
+	    </dependency>
+        
         <dependency>
 		    <groupId>org.mockito</groupId>
 		    <artifactId>mockito-core</artifactId>
 		    <!-- Replace with the latest version -->
 		    <scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>com.oracle.database.jdbc</groupId>
+		    <artifactId>ojdbc8</artifactId>
+		</dependency>
+
 
     </dependencies>
 

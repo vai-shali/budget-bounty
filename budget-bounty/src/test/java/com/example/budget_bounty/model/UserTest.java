@@ -29,7 +29,7 @@ public class UserTest {
     @BeforeEach
     public void setUp() {
         bank = new Bank("BankName", "AccountNumber" ,"IFSC", 1000, "x@gmail.com");
-        user = new User("john_doe", "john.doe@example.com", "123-456-7890", bank, "password123");
+        user = new User(10, "john_doe", "john.doe@example.com", "123-456-7890", bank, "password123");
         transaction = new Transaction("John Doe", "Jane Doe", 1000.0, new Date(), "REF123");
         bill = new Bill(1, "Credit Card", 150.0, 15.0, new Date(), 1);
         scheduler = new PaymentScheduler();
@@ -86,7 +86,7 @@ public class UserTest {
      */
     @Test
     public void testUserWithNullBankDetails() {
-        User userWithNullBank = new User("john_doe", "john.doe@example.com", "123-456-7890", null, "password123");
+        User userWithNullBank = new User(10, "john_doe", "john.doe@example.com", "123-456-7890", null, "password123");
         assertNull(userWithNullBank.getBankDetails());
     }
     /**
@@ -94,7 +94,7 @@ public class UserTest {
      */
     @Test
     public void testEmptyTransactionsList() {
-        User userWithEmptyTransactions = new User("john_doe", "john.doe@example.com", "123-456-7890", bank, "password123");
+        User userWithEmptyTransactions = new User(10, "john_doe", "john.doe@example.com", "123-456-7890", bank, "password123");
         assertTrue(userWithEmptyTransactions.getTransactions().isEmpty());
     }
     /**
@@ -152,7 +152,7 @@ public class UserTest {
      */
     @Test
     public void testUserToStringWithNullValues() {
-    	User userWithNullValues = new User(null, null, null, null, null);
+    	User userWithNullValues = new User(10, null, null, null, null, null);
         String expectedString = "UserName: null\nEmail: null\nPhone: null\nNo Bank details to display";
         assertEquals(expectedString, userWithNullValues.toString());
     }
