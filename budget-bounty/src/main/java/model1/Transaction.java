@@ -12,7 +12,9 @@ public class Transaction {
     private String transactionType;
     private Double amount;
     private String referenceNumber;
-
+    public Transaction() {
+    	
+    }
     public Transaction(Integer transactionId, Integer userId, Date transactionDate, String transactionName,
                        String fromAccountNumber, String toAccountNumber, String transactionType,
                        Double amount, String referenceNumber) {

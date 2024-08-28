@@ -8,13 +8,16 @@ import model1.Scheduler;
 
 public class SchedulerService {
 	
-	private final SchedulerRepository schedulerRepository = new SchedulerRepository();
+	private final SchedulerRepository schedulerRepository; 
 	
 	//constructor
 	public SchedulerService()
 	{
+		this.schedulerRepository=new SchedulerRepository();
 	}
-	
+	public SchedulerService(SchedulerRepository scr) {
+		this.schedulerRepository=scr;	
+		}
 	//getting all scheduled payments (admin functionality)
 	public List<Scheduler> getAllScheduledPayments() {
 		return schedulerRepository.getAllScheduledPayments();

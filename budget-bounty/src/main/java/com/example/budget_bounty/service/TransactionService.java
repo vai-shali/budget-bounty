@@ -13,7 +13,9 @@ public class TransactionService {
     public TransactionService() {
         this.transactionRepository = new TransactionRepository();
     }
-
+    public TransactionService(TransactionRepository trc) {
+        this.transactionRepository = trc;
+    }
     // Save a new transaction
     public void saveTransaction(Transaction transaction) {
         try {
