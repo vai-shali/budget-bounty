@@ -138,7 +138,7 @@ public class Application {
             System.out.println("\nMenu:");
             System.out.println("1. Link Bank or UPI");
             System.out.println("2. View Transactions");
-            System.out.println("3. Scheduling Payments");
+            System.out.println("3. Payment Scheduler Menu");
             System.out.println("4. Make Payment");
             System.out.println("5. Logout");
             option = scanner.nextInt();
@@ -236,8 +236,17 @@ public class Application {
      * @param user
      */
     static void scheduleBill(Scanner scanner, User user) {
-//        SchedulerController schedulercontroller = new SchedulerController(user.getUserId());
-//        schedulercontroller.handleUserInput();
+    	if (user.getBankDetails() == null) {
+            System.out.println("Bank Account not linked!!");
+            System.out.println("Link Bank Account? (y/n)");
+            String choice = scanner.nextLine();
+            if (choice.equalsIgnoreCase("y"))
+                linkBankOrUPI(scanner, user);
+            }
+    	else {
+    		SchedulerController schedulercontroller = new SchedulerController(user);
+            schedulercontroller.handleUserInput();
+    	}
         showMenu(scanner, user);
     }
 
@@ -266,9 +275,6 @@ public class Application {
      * @param user
      */
     static void makePayment(Scanner scanner, User user) {
-
-        String email = user.getEmail();
-        Integer userId = user.getUserId();
 
         if (user.getBankDetails() == null) {
             System.out.println("Bank Account not linked!!");

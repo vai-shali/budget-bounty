@@ -28,6 +28,11 @@ public class SchedulerService {
     public void deleteScheduler(int schedulerId) {
         schedulerRepository.deleteScheduler(schedulerId);
     }
+    
+ // Method to get all scheduled bills for a specific user by user ID
+    public Scheduler getSchedulerById(int schedulerId) {
+        return schedulerRepository.getSchedulerById(schedulerId);
+    }
 
     // Method to get all scheduled bills for a specific user by user ID
     public List<Scheduler> getSchedulersByUserId(int userId) {
@@ -48,12 +53,21 @@ public class SchedulerService {
     // Method to update an existing scheduled bill
     public void updateScheduler(Scheduler scheduler, User user) {
         scheduler.setUser(user);
+        
+        // Check if the scheduler exists
+        Scheduler existingScheduler = schedulerRepository.getSchedulerById(scheduler.getSchedulerId());
+        if (existingScheduler == null) {
+            System.out.println("Scheduler with ID " + scheduler.getSchedulerId() + " does not exist.");
+            return;
+        }
+        
+        // Proceeding with the update
         schedulerRepository.updateScheduler(scheduler);
     }
     
     // Method to delete a scheduled bill by user ID and bill name
-    public boolean deleteSchedulerByBillName(int userId, String billName) {
-        List<Scheduler> schedulers = schedulerRepository.getSchedulersByBillName(userId, billName);
+    public boolean deleteSchedulerByBillName(User user, String billName) {
+        List<Scheduler> schedulers = schedulerRepository.getSchedulersByBillName(user, billName);
         
         if (schedulers.isEmpty()) {
             System.out.println("No scheduled bill found with the given bill name for the specified user.");

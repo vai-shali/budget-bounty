@@ -1,5 +1,7 @@
 package hiber.hiber;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -11,9 +13,11 @@ import org.hibernate.query.Query;
 
 import hiber.hiber.model.Bank;
 import hiber.hiber.model.PaymentTransaction;
+import hiber.hiber.model.Scheduler;
 import hiber.hiber.model.User;
 import hiber.hiber.service.BankService;
 import hiber.hiber.service.PaymentTransactionService;
+import hiber.hiber.service.SchedulerService;
 import hiber.hiber.service.UserService;
 import hiber.hiber.util.HibernateUtil;
 
@@ -122,7 +126,91 @@ public class Main {
         transactions.forEach(transaction -> System.out.println(transaction.toString()));
     }
 	
+	private static Date parseDate(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            return sdf.parse(dateStr);
+        } catch (ParseException e) {
+            System.err.println("Invalid date format: " + e.getMessage());
+            return null;
+        }
+    }
+	
+	public static void schedulerCheck() {
+        SchedulerService ss = new SchedulerService();
+        UserService us = new UserService();
+        User user = us.getUserById(2); // Fetch a user to associate with Scheduler
+        
+        ss.deleteScheduler(5);
+        Date dueDate = parseDate("03/10/2024");
+        Date scheduledDate = parseDate("01/10/2024");
+        
+        // Create a new Scheduler
+        Scheduler scheduler = new Scheduler(
+            user,                        // Associated User
+            "Electricity",               // Bill Type
+            1002,                        // Customer ID (optional)
+            "Electric Bill",             // Bill Name
+            "2763723672263",           // Payee Account
+            150.0,                       // Amount
+            dueDate,                  // Due Date
+            scheduledDate,                  // Scheduled Date
+            1,                           // Recurring (true)
+            "monthly",                   // Frequency
+            5,                          // End After (number of payments)
+            null,                        // End By Date (optional)
+            0                            // Is Paid (false)
+        );
+
+        // Print all schedulers before any operations
+        System.out.println("Before Insert:");
+        List<Scheduler> schedulers = ss.getAllScheduledPayments();
+        schedulers.forEach(System.out::println);
+
+        // Add Scheduler
+        ss.addScheduler(scheduler, user);
+
+        // Print all schedulers after insertion
+        System.out.println("After Insert:");
+        schedulers = ss.getAllScheduledPayments();
+        schedulers.forEach(System.out::println);
+
+        // Update Scheduler
+        scheduler.setAmount(200.0); // Update amount
+        ss.updateScheduler(scheduler, user);
+
+        // Print all schedulers after update
+        System.out.println("After Update:");
+        schedulers = ss.getAllScheduledPayments();
+        schedulers.forEach(System.out::println);
+
+        // Retrieve Scheduler by ID
+        Scheduler retrievedScheduler = ss.getSchedulersByUserId(user.getUserId()).stream()
+                .filter(s -> s.getSchedulerId() == 1)
+                .findFirst()
+                .orElse(null);
+        System.out.println("Retrieved by ID: " + retrievedScheduler);
+
+        // Retrieve schedulers by Bill Name
+        List<Scheduler> schedulersByBillName = ss.getSchedulersByBillName(user, "Electric Bill");
+        System.out.println("Schedulers for Bill Name 'Electric Bill':");
+        schedulersByBillName.forEach(System.out::println);
+
+        // Delete Scheduler
+        ss.deleteScheduler(1);
+
+        // Print all schedulers after deletion
+        System.out.println("After Delete:");
+        schedulers = ss.getAllScheduledPayments();
+        schedulers.forEach(System.out::println);
+        
+        // Try deleting by Bill Name
+        boolean isDeleted = ss.deleteSchedulerByBillName(user, "Electric Bill");
+        System.out.println("Scheduler deletion by Bill Name successful: " + isDeleted);
+    }
+	
 	public static void main(String[] args) {
+		schedulerCheck();
 		transactionCheck();
 		bankCheck();
 		userCheck();

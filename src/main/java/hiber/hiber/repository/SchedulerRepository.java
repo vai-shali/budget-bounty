@@ -41,13 +41,26 @@ public class SchedulerRepository {
             e.printStackTrace();
         }
     }
+    
+    //get scheduler by id
+    public Scheduler getSchedulerById(int schedulerId) {
+        try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
+            String hql = "FROM Scheduler WHERE schedulerId = :schedulerId";
+            Query<Scheduler> query = session.createQuery(hql, Scheduler.class);
+            query.setParameter("schedulerId", schedulerId);
+            return query.uniqueResult(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     // User methods
 
     // Method to get scheduled bills for a specific user using userID
     public List<Scheduler> getSchedulersByUserId(int userId) {
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
-            String hql = "FROM Scheduler WHERE userId = :userId";
+            String hql = "FROM Scheduler WHERE user.userId = :userId";
             Query<Scheduler> query = session.createQuery(hql, Scheduler.class);
             query.setParameter("userId", userId);
             return query.list();
@@ -60,9 +73,9 @@ public class SchedulerRepository {
     // Method to get a scheduled bill for a user by bill name
     public List<Scheduler> getSchedulersByBillName(User user, String billName) {
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
-            String hql = "FROM Scheduler WHERE userId = :userId AND billName = :billName";
+            String hql = "FROM Scheduler WHERE user.userId = :userId AND billName = :billName";
             Query<Scheduler> query = session.createQuery(hql, Scheduler.class);
-            query.setParameter("userId", user);
+            query.setParameter("userId", user.getUserId());
             query.setParameter("billName", billName);
             return query.list();
         } catch (Exception e) {
@@ -94,8 +107,12 @@ public class SchedulerRepository {
             session.update(scheduler);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+            if (transaction != null && transaction.isActive()) {
+                try {
+                    transaction.rollback();
+                } catch (Exception rollbackException) {
+                    rollbackException.printStackTrace();
+                }
             }
             e.printStackTrace();
         }
