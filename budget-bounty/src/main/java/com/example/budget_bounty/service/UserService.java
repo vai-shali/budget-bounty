@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.example.budget_bounty.repository.UserRepository;
 
-import model1.User;
+import com.example.budget_bounty.model1.User;
 
 public class UserService {
 	private static UserRepository userRepository = new UserRepository();

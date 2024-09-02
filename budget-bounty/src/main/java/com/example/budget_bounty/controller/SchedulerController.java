@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import com.example.budget_bounty.service.SchedulerService;
 
-import model1.Scheduler;
+import com.example.budget_bounty.model1.Scheduler;
 
 public class SchedulerController {
 

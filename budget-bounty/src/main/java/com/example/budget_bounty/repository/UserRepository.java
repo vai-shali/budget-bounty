@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.example.budget_bounty.util.DatabaseConnection;
 
-import model1.User;
+import com.example.budget_bounty.model1.User;
 
 public class UserRepository {
 	public User findById(int userId) throws SQLException {

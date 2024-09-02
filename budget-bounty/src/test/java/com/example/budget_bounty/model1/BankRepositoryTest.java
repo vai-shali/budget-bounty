@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import com.example.budget_bounty.repository.BankRepository;
 
-import model1.Bank;
 //import com.example.budget_bounty.util.DatabaseConnection;
 
 public class BankRepositoryTest {

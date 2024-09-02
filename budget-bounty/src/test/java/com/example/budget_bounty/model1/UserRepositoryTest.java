@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import com.example.budget_bounty.repository.UserRepository;
 //import com.example.budget_bounty.service.UserService;
 
-import model1.User;
 
 public class UserRepositoryTest {
 	private static UserRepository obj;

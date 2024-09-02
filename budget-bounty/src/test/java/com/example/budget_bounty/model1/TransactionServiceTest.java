@@ -3,7 +3,6 @@ package com.example.budget_bounty.model1;
 import com.example.budget_bounty.repository.TransactionRepository;
 import com.example.budget_bounty.service.TransactionService;
 
-import model1.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ public class TransactionServiceTest {
     // Test saveTransaction method
     @Test
     public void testSaveTransaction_Success() throws SQLException {
-        Transaction transaction = new Transaction(); // Assume constructor sets default values
+        PaymentTransaction transaction = new PaymentTransaction(); // Assume constructor sets default values
 
         transactionService.saveTransaction(transaction);
 
@@ -38,7 +37,7 @@ public class TransactionServiceTest {
 
     @Test
     public void testSaveTransaction_Failure() throws SQLException {
-        Transaction transaction = new Transaction();
+    	PaymentTransaction transaction = new PaymentTransaction();
         doThrow(new SQLException("Database error")).when(transactionRepository).save(transaction);
 
         transactionService.saveTransaction(transaction);
@@ -50,10 +49,10 @@ public class TransactionServiceTest {
     @Test
     public void testGetTransactionById_Success() throws SQLException {
         int transactionId = 1;
-        Transaction mockTransaction = new Transaction();
+        PaymentTransaction mockTransaction = new PaymentTransaction();
         when(transactionRepository.findById(transactionId)).thenReturn(mockTransaction);
 
-        Transaction result = transactionService.getTransactionById(transactionId);
+        PaymentTransaction result = transactionService.getTransactionById(transactionId);
 
         assertNotNull(result);
         assertEquals(mockTransaction, result);
@@ -64,7 +63,7 @@ public class TransactionServiceTest {
         int transactionId = 1;
         when(transactionRepository.findById(transactionId)).thenThrow(new SQLException("Database error"));
 
-        Transaction result = transactionService.getTransactionById(transactionId);
+        PaymentTransaction result = transactionService.getTransactionById(transactionId);
 
         assertNull(result);
     }
@@ -73,11 +72,11 @@ public class TransactionServiceTest {
     @Test
     public void testGetTransactionsByUserId_Success() throws SQLException {
         int userId = 1;
-        List<Transaction> mockTransactions = new ArrayList<>();
-        mockTransactions.add(new Transaction());
+        List<PaymentTransaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new PaymentTransaction());
         when(transactionRepository.findByUserId(userId)).thenReturn(mockTransactions);
 
-        List<Transaction> result = transactionService.getTransactionsByUserId(userId);
+        List<PaymentTransaction> result = transactionService.getTransactionsByUserId(userId);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -88,7 +87,7 @@ public class TransactionServiceTest {
         int userId = 1;
         when(transactionRepository.findByUserId(userId)).thenThrow(new SQLException("Database error"));
 
-        List<Transaction> result = transactionService.getTransactionsByUserId(userId);
+        List<PaymentTransaction> result = transactionService.getTransactionsByUserId(userId);
 
         assertNull(result);
     }
@@ -96,11 +95,11 @@ public class TransactionServiceTest {
     // Test getAllTransactions method
     @Test
     public void testGetAllTransactions_Success() throws SQLException {
-        List<Transaction> mockTransactions = new ArrayList<>();
-        mockTransactions.add(new Transaction());
+        List<PaymentTransaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(new PaymentTransaction());
         when(transactionRepository.findAll()).thenReturn(mockTransactions);
 
-        List<Transaction> result = transactionService.getAllTransactions();
+        List<PaymentTransaction> result = transactionService.getAllTransactions();
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -110,7 +109,7 @@ public class TransactionServiceTest {
     public void testGetAllTransactions_Failure() throws SQLException {
         when(transactionRepository.findAll()).thenThrow(new SQLException("Database error"));
 
-        List<Transaction> result = transactionService.getAllTransactions();
+        List<PaymentTransaction> result = transactionService.getAllTransactions();
 
         assertNull(result);
     }
@@ -118,7 +117,7 @@ public class TransactionServiceTest {
     // Test updateTransaction method
     @Test
     public void testUpdateTransaction_Success() throws SQLException {
-        Transaction transaction = new Transaction();
+    	PaymentTransaction transaction = new PaymentTransaction();
 
         transactionService.updateTransaction(transaction);
 
@@ -127,7 +126,7 @@ public class TransactionServiceTest {
 
     @Test
     public void testUpdateTransaction_Failure() throws SQLException {
-        Transaction transaction = new Transaction();
+    	PaymentTransaction transaction = new PaymentTransaction();
         doThrow(new SQLException("Database error")).when(transactionRepository).update(transaction);
 
         transactionService.updateTransaction(transaction);

@@ -3,7 +3,6 @@ package com.example.budget_bounty.model1;
 import com.example.budget_bounty.repository.SchedulerRepository;
 import com.example.budget_bounty.service.SchedulerService;
 
-import model1.Scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

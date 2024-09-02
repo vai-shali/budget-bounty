@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.example.budget_bounty.util.DatabaseConnection;
 
-import model1.Bank;
+import com.example.budget_bounty.model1.Bank;
 
 public class BankRepository {
 

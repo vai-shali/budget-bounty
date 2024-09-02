@@ -31,11 +31,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.example.budget_bounty.controller.SchedulerController;
 import com.example.budget_bounty.model.Bank;
 import com.example.budget_bounty.model.User;
-import com.example.budget_bounty.repository.TransactionRepository;
 import com.example.budget_bounty.service.TransactionService;
 
-import model1.Transaction;
-
+import com.example.budget_bounty.model1.PaymentTransaction;
 /**
  * Main File
  * @author Amrisha Das
@@ -242,8 +240,10 @@ public class Application {
      */
     static void viewPastTransactions(User user) { //differentiate between past and scheduled transaction
         System.out.println("Transactions:");
-        List<Transaction> transactions = transactionService.getAllTransactions();
-        for (Transaction transaction : transactions) {
+        System.out.println(user.getId());
+//        List<PaymentTransaction> transactions = transactionService.getTransactionsByUserId(user.getId());
+        List<PaymentTransaction> transactions = transactionService.getAllTransactions();
+        for (PaymentTransaction transaction : transactions) {
             System.out.println(transaction.toString());
             System.out.println("----------------------------");
         }
@@ -259,51 +259,6 @@ public class Application {
     	schedulercontroller.handleUserInput();
     	showMenu(scanner, user);
     }
-    
-    //OLD FUNCTION-SPRINT1
-    /**
-    static void scheduleBill(Scanner scanner, User user) { //functionality for recurring bills
-//    	System.out.println("PRINTING ALL SCHEDULED BILLS");
-//    	SchedulerRepository schedule = new SchedulerRepository();
-//    	schedule.getAllScheduledPayments();
-    	
-    	String email = user.getEmail();
-    	if(!bankDetailsMap.containsKey(email))
-    	{
-    		System.out.println("Bank Account not linked!!");
-    		System.out.println("Link Bank Account? (y/n)");
-    		String choice = scanner.nextLine();
-    		if(choice.equalsIgnoreCase("y"))
-    			linkBankOrUPI(scanner, user);
-    	}
-        System.out.println("Enter the transaction amount:");
-        double amount = scanner.nextDouble();
-        scanner.nextLine();
-        System.out.println("Enter the transaction date (dd/MM/yyyy):");
-        String dateString = scanner.nextLine();
-
-        try {
-            Date transactionDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(transactionDate);
-            calendar.add(Calendar.DAY_OF_MONTH, -2);
-            Date alertDate = calendar.getTime();
-
-            String referenceNumber = generateReferenceNumber();
-            
-            System.out.println("Enter a description for the payment (e.g., 'Electricity Bill', 'Grocery Shopping'):");
-            String paymentDescription = scanner.nextLine();
-            
-            Transaction transaction = new Transaction(user.getUsername(), paymentDescription+" (Scheduled Bill)", amount, transactionDate, referenceNumber);
-            user.addTransaction(transaction);
-
-            System.out.println("Bill scheduled successfully.");
-            System.out.println("An alert will be sent on: " + new SimpleDateFormat("dd/MM/yyyy").format(alertDate));
-        } catch (Exception e) {
-            System.out.println("Invalid date format.");
-        }
-    }
-*/
     
     
     /**
@@ -365,7 +320,7 @@ public class Application {
        }
 
        System.out.println("Enter the transaction amount:");
-       double amount = scanner.nextDouble();
+       Double amount = scanner.nextDouble();
        scanner.nextLine();
        
        System.out.println("Enter a description for the payment (e.g., 'Electricity Bill', 'Grocery Shopping'):");
@@ -386,17 +341,10 @@ public class Application {
            // Convert LocalDate to Date
            Date transactionDate = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-//    	   Transaction transaction = new Transaction(user.getUsername(), paymentDescription, amount, transactionDate, referenceNumber);
-//           user.addTransaction(transaction);
            try {
-        	   // Fetch the next transaction ID
-        	   TransactionRepository transactionRepository = new TransactionRepository();
-        	   int nextTransactionId = transactionRepository.getMaxTransactionId() + 1;
-        	   
-        	   Transaction newTransaction = new Transaction(nextTransactionId, userId, transactionDate, paymentDescription,
-                       "123456789", payeeAcc, "debited", amount, referenceNumber);
-               transactionService.saveTransaction(newTransaction);
-               
+//        	   PaymentTransaction newTransaction = new PaymentTransaction(user, transactionDate, paymentDescription,
+//                       "123456789", payeeAcc, "debited", amount, referenceNumber);
+//               transactionService.saveTransaction(newTransaction);
         	   System.out.println("Payment Successful!");
            } catch (Exception e) {
         	   System.out.println(e.getMessage());

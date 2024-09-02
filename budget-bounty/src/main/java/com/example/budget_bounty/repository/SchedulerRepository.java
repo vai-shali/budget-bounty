@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.example.budget_bounty.util.DatabaseConnection;
 
-import model1.Scheduler;
+import com.example.budget_bounty.model1.Scheduler;
 
 public class SchedulerRepository {
 	

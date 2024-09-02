@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import com.example.budget_bounty.service.UserService;
 
-import model1.User;
 
 public class UserServiceTest {
 	private static UserService obj;

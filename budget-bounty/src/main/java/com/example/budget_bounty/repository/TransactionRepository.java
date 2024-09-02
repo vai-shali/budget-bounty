@@ -1,157 +1,133 @@
 package com.example.budget_bounty.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import java.util.List;
 
-import com.example.budget_bounty.util.DatabaseConnection;
+import com.example.budget_bounty.util.HibernateUtil;
 
-import model1.Transaction;
+import com.example.budget_bounty.model1.PaymentTransaction;
 
 public class TransactionRepository {
 
-    public void save(Transaction transaction) throws SQLException {
-        String sql = "INSERT INTO Transaction (transaction_id, user_id, transaction_date, transaction_name, " +
-                "from_account_number, to_account_number, transaction_type, amount, reference_number) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, transaction.getTransactionId());
-            preparedStatement.setInt(2, transaction.getUserId());
-            preparedStatement.setDate(3, new java.sql.Date(transaction.getTransactionDate().getTime()));
-            preparedStatement.setString(4, transaction.getTransactionName());
-            preparedStatement.setString(5, transaction.getFromAccountNumber());
-            preparedStatement.setString(6, transaction.getToAccountNumber());
-            preparedStatement.setString(7, transaction.getTransactionType());
-            preparedStatement.setDouble(8, transaction.getAmount());
-            preparedStatement.setString(9, transaction.getReferenceNumber());
-
-            preparedStatement.executeUpdate();
+	//saving a paymentTransaction into the db
+	public void save(PaymentTransaction paymentTransaction) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;	//hibernate's transaction class
+        try {
+            tx = session.beginTransaction();
+            session.save(paymentTransaction);  // Save the entity
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 
     //admin functions
-    //find by transaction id
-    public Transaction findById(int transactionId) throws SQLException {
-        String sql = "SELECT * FROM Transaction WHERE transaction_id = ?";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, transactionId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return mapRowToTransaction(resultSet);
-            }
+    //find by paymentTransaction id
+	public PaymentTransaction findById(Integer transactionId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        PaymentTransaction paymentTransaction = null;
+        try {
+            paymentTransaction = session.get(PaymentTransaction.class, transactionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
-
-        return null; // If no result found
+        return paymentTransaction;
     }
 
-    //get all transactions
-    public List<Transaction> findAll() throws SQLException {
-        List<Transaction> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM Transaction";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-                transactions.add(mapRowToTransaction(resultSet));
-            }
+    //get all paymentTransactions in the database
+	public List<PaymentTransaction> findAll() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<PaymentTransaction> paymentTransactions = null;
+        try {
+            Query<PaymentTransaction> query = session.createQuery("from PaymentTransaction", PaymentTransaction.class);
+            paymentTransactions = query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
-
-        return transactions;
+        return paymentTransactions;
     }
 
-    // update transaction
-    public void update(Transaction transaction) throws SQLException {
-        String sql = "UPDATE Transaction SET user_id = ?, transaction_date = ?, transaction_name = ?, " +
-                "from_account_number = ?, to_account_number = ?, transaction_type = ?, amount = ?, " +
-                "reference_number = ? WHERE transaction_id = ?";
+    // update paymentTransaction
+	public void update(PaymentTransaction paymentTransaction) {
+	    Session session = HibernateUtil.getSessionFactory().openSession();
+	    Transaction tx = null;
+	    try {
+	        tx = session.beginTransaction();
+	        session.update(paymentTransaction);  // Update the entity
+	        tx.commit();
+	    } catch (Exception e) {
+	        if (tx != null) {
+	            tx.rollback();
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        session.close();
+	    }
+	}
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setInt(1, transaction.getUserId());
-            preparedStatement.setDate(2, new java.sql.Date(transaction.getTransactionDate().getTime()));
-            preparedStatement.setString(3, transaction.getTransactionName());
-            preparedStatement.setString(4, transaction.getFromAccountNumber());
-            preparedStatement.setString(5, transaction.getToAccountNumber());
-            preparedStatement.setString(6, transaction.getTransactionType());
-            preparedStatement.setDouble(7, transaction.getAmount());
-            preparedStatement.setString(8, transaction.getReferenceNumber());
-            preparedStatement.setInt(9, transaction.getTransactionId());
+    // delete a paymentTransaction
+	public void delete(int transactionId) {
+	    Session session = HibernateUtil.getSessionFactory().openSession();
+	    Transaction tx = null;
+	    try {
+	        tx = session.beginTransaction();
+	        PaymentTransaction paymentTransaction = session.get(PaymentTransaction.class, transactionId);
+	        if (paymentTransaction != null) {
+	            session.delete(paymentTransaction);  // Delete the entity
+	        }
+	        tx.commit();
+	    } catch (Exception e) {
+	        if (tx != null) {
+	            tx.rollback();
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        session.close();
+	    }
+	}
 
-            preparedStatement.executeUpdate();
+    
+    // user function: view their past paymentTransactions based on their user id
+	public List<PaymentTransaction> findByUserId(int userId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<PaymentTransaction> paymentTransactions = null;
+        try {
+            Query<PaymentTransaction> query = session.createQuery("from PaymentTransaction where user.userId = :userId", PaymentTransaction.class);
+            query.setParameter("userId", userId);
+            paymentTransactions = query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
-    }
-
-    // delete a transaction
-    public void delete(int transactionId) throws SQLException {
-        String sql = "DELETE FROM Transaction WHERE transaction_id = ?";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, transactionId);
-            preparedStatement.executeUpdate();
-        }
+        return paymentTransactions;
     }
     
-    // user function: view transaction based on user id
-    public List<Transaction> findByUserId(int userId) throws SQLException {
-        List<Transaction> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM Transaction WHERE user_id = ?";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                transactions.add(mapRowToTransaction(resultSet));
-            }
+	// Get the maximum transaction ID
+    public int getMaxTransactionId() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Integer maxId = null;
+        try {
+            Query<Integer> query = session.createQuery("select max(transactionId) from PaymentTransaction", Integer.class);
+            maxId = query.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
-
-        return transactions;
-    }
-    
-    public int getMaxTransactionId() throws SQLException {
-        String sql = "SELECT MAX(transaction_id) AS max_id FROM Transaction";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            if (resultSet.next()) {
-                return resultSet.getInt("max_id");
-            } else {
-                return 0; // No transactions in the table, start with ID 1
-            }
-        }
-    }
-    
-
-    private Transaction mapRowToTransaction(ResultSet resultSet) throws SQLException {
-        return new Transaction(
-                resultSet.getInt("transaction_id"),
-                resultSet.getInt("user_id"),
-                resultSet.getDate("transaction_date"),
-                resultSet.getString("transaction_name"),
-                resultSet.getString("from_account_number"),
-                resultSet.getString("to_account_number"),
-                resultSet.getString("transaction_type"),
-                resultSet.getDouble("amount"),
-                resultSet.getString("reference_number")
-        );
+        return (maxId != null) ? maxId : 0; // Return 0 if no transactions are present
     }
 }

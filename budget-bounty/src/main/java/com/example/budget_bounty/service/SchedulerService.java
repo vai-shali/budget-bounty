@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.budget_bounty.repository.SchedulerRepository;
 
-import model1.Scheduler;
+import com.example.budget_bounty.model1.Scheduler;
 
 public class SchedulerService {
 	

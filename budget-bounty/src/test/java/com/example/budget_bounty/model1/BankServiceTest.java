@@ -2,7 +2,6 @@ package com.example.budget_bounty.model1;
 import com.example.budget_bounty.repository.BankRepository;
 import com.example.budget_bounty.service.BankService;
 
-import model1.Bank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

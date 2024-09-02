@@ -1,7 +1,7 @@
 package com.example.budget_bounty.service;
 
 import java.util.List;
-import model1.Bank;
+import com.example.budget_bounty.model1.Bank;
 import com.example.budget_bounty.repository.BankRepository;
 
 public class BankService {
