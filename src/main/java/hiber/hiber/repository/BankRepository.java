@@ -1,9 +1,5 @@
 package hiber.hiber.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,58 +42,37 @@ public class BankRepository {
 		Session s=sf.openSession();
 		try {
 			Transaction tran=s.beginTransaction();
-//			String hql = "INSERT INTO Bank (bankId, bankName, ifsc, accountNumber, upiId, accountType, balance, userId) " +
-//		             "SELECT :bankId, :bankName, :ifsc, :accountNumber, :upiId, :accountType, :balance, :userId";
-//			Query qr = s.createQuery(hql);
-//			qr.setParameter("bankId", bank.getBankId());
-//			qr.setParameter("bankName", bank.getBankName());
-//			qr.setParameter("ifsc", bank.getIfsc());
-//			qr.setParameter("accountNumber", bank.getAccountNumber());
-//			qr.setParameter("upiId", bank.getUpiId());
-//			qr.setParameter("accountType", bank.getAccountType());
-//			qr.setParameter("balance",bank.getBalance());
-//			qr.setParameter("userId", bank.getUser().getUserId());
-//			qr.executeUpdate();
 			s.save(bank);
 			tran.commit();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-		}
-    }
+		} finally {
+	        s.close();
+	    }
+    } 
 
     // Method to update an existing bank account
     public void updateBank(Bank bank) {
+    	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
+		Session s=sf.openSession();
         try {
-        	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
-    		Session s=sf.openSession();
     		Transaction tran=s.beginTransaction();
-//    		String hql = "UPDATE Bank SET bankName = :bankName, ifsc = :ifsc, accountNumber = :accountNumber, " +
-//                    "upiId = :upiId, accountType = :accountType, balance = :balance, userId = :userId " +
-//                    "WHERE bankId = :bankId";
-//    		Query qr = s.createQuery(hql);
-//    		qr.setParameter("bankId", bank.getBankId());
-//			qr.setParameter("bankName", bank.getBankName());
-//			qr.setParameter("ifsc", bank.getIfsc());
-//			qr.setParameter("accountNumber", bank.getAccountNumber());
-//			qr.setParameter("upiId", bank.getUpiId());
-//			qr.setParameter("accountType", bank.getAccountType());
-//			qr.setParameter("balance",bank.getBalance());
-//			qr.setParameter("userId", bank.getUser().getUserId());
-//    		qr.executeUpdate();
     		s.update(bank);
     		tran.commit();
         }
         catch(Exception e) {
         	e.printStackTrace();
+        } finally {
+            s.close();
         }
     }
 
     // Method to delete a bank account by ID
     public void deleteBank(int bankId) {
+    	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
+		Session s=sf.openSession();
         try {
-        	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
-    		Session s=sf.openSession();
     		Transaction tran=s.beginTransaction();
     		String hql = "DELETE FROM Bank WHERE bankId = :bankId";
     		Query qr = s.createQuery(hql);
@@ -108,8 +83,9 @@ public class BankRepository {
         }
         catch(Exception e) {
         	e.printStackTrace();
+        } finally {
+            s.close();
         }
     }
-    // Method to map ResultSet to Bank object
 }
 

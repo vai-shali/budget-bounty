@@ -1,5 +1,6 @@
 package hiber.hiber.model;
 
+import java.util.List;
 import java.util.Set;
 
 import hiber.hiber.model.Bank;
@@ -30,6 +31,13 @@ public class User {
 //    private Bank bankDetails;  // Add a field for Bank details
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Bank bankDetails;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PaymentTransaction> paymentTransactions;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Scheduler> schedulers;
+    
     // Constructor without parameters
     public User() {}
 

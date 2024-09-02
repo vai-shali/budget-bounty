@@ -13,7 +13,7 @@ public class UserService {
         UserService.userRepository = new UserRepository();
     }
  // Save a new user
-    public static void saveUser(User user) {
+    public void saveUser(User user) {
         try {
             userRepository.save(user);
             System.out.println("User saved successfully.");
