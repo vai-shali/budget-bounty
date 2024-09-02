@@ -1,10 +1,6 @@
 package hiber.hiber.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -62,10 +58,11 @@ public class UserRepository {
 		}
 		return list.get(0);
     }
+    
     public void update(User user) throws SQLException {
+    	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
+ 		Session s=sf.openSession();
     	 try {
-         	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
-     		Session s=sf.openSession();
      		Transaction tran=s.beginTransaction();
      		String hql = "UPDATE User SET name = :name, username = :username, password = :password, " +
                      "phoneNumber = :phoneNumber, email = :email, role = :role " +
@@ -83,8 +80,11 @@ public class UserRepository {
          }
          catch(Exception e) {
          	e.printStackTrace();
+         } finally {
+             s.close(); 
          }
     }
+    
     public void save(User user) throws SQLException {
     	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
 		Session s=sf.openSession();
@@ -105,12 +105,15 @@ public class UserRepository {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-		}
+		} finally {
+            s.close(); 
+        }
     }
+    
     public void delete(int userId) throws SQLException {
+    	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
+		Session s=sf.openSession();
     	try {
-        	SessionFactory sf=HibernateUtil.getSessionFactoryObject();
-    		Session s=sf.openSession();
     		Transaction tran=s.beginTransaction();
     		String hql = "DELETE FROM User WHERE userId = :userId";
     		Query qr = s.createQuery(hql);
@@ -121,6 +124,8 @@ public class UserRepository {
         }
         catch(Exception e) {
         	e.printStackTrace();
+        } finally {
+            s.close(); 
         }
     }
 }

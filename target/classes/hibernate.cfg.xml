@@ -17,7 +17,7 @@
 
 <property name="connection.user">system</property>
 
-<property name="connection.password">1234</property>
+<property name="connection.password">root</property>
 
 <!-- Related to the connection END -->
  
@@ -36,6 +36,8 @@
 <!--  -->
 <mapping class="hiber.hiber.model.Bank"/>
 <mapping class="hiber.hiber.model.User"/>
+<mapping class="hiber.hiber.model.PaymentTransaction"/>
+<mapping class="hiber.hiber.model.Scheduler"/>
 <!-- Related to the mapping END -->
  
 </session-factory>

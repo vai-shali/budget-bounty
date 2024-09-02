@@ -1,5 +1,6 @@
 package hiber.hiber;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -9,8 +10,10 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import hiber.hiber.model.Bank;
+import hiber.hiber.model.PaymentTransaction;
 import hiber.hiber.model.User;
 import hiber.hiber.service.BankService;
+import hiber.hiber.service.PaymentTransactionService;
 import hiber.hiber.service.UserService;
 import hiber.hiber.util.HibernateUtil;
 
@@ -48,6 +51,7 @@ public class Main {
 			System.out.println(objli.toString());
 		});
 	}
+	
 	public static void userCheck() {
 		UserService us=new UserService();
 		User uobj=new User(6,"name","username","password","9876543210","email",0);
@@ -73,8 +77,55 @@ public class Main {
 			System.out.println(objli.toString());
 		});
 	}
+	
+	public static void transactionCheck() {
+        PaymentTransactionService pts = new PaymentTransactionService();
+        UserService us = new UserService();
+
+        // Fetch a user by ID for associating with the transaction
+        User user = us.getUserById(1);
+
+        // Create a new PaymentTransaction
+        PaymentTransaction pt = new PaymentTransaction(user, new Date(),"Payment for rent","fromAccountNumber","toAccountNumber","debit", 200.0,"referenceNumber5");
+
+        // Insert the PaymentTransaction
+        pts.saveTransaction(pt);
+
+        // Retrieve and print all transactions before any updates
+        System.out.println("Before Update:");
+        List<PaymentTransaction> transactions = pts.getAllTransactions();
+        transactions.forEach(transaction -> System.out.println(transaction.toString()));
+
+        // Update the transaction
+        pt.setAmount(250.0);
+        pts.updateTransaction(pt);
+
+        // Retrieve and print all transactions after the update
+        System.out.println("After Update:");
+        transactions = pts.getAllTransactions();
+        transactions.forEach(transaction -> System.out.println(transaction.toString()));
+
+        // Retrieve and print a transaction by ID
+        PaymentTransaction retrievedTransaction = pts.getTransactionById(2);
+        System.out.println("Retrieved by ID: " + retrievedTransaction.toString());
+
+        // Delete the transaction by ID
+        pts.deleteTransaction(2);
+
+        // Retrieve and print all transactions after deletion
+        System.out.println("After Deletion:");
+        transactions = pts.getAllTransactions();
+        transactions.forEach(transaction -> System.out.println(transaction.toString()));
+        
+        System.out.println("Transactions for USER ID 2:");
+        transactions = pts.getTransactionsByUserId(2);
+        transactions.forEach(transaction -> System.out.println(transaction.toString()));
+    }
+	
 	public static void main(String[] args) {
+		transactionCheck();
 		bankCheck();
 		userCheck();
 	}
+	
 }
