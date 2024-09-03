@@ -13,6 +13,8 @@ import hiber.hiber.util.HibernateUtil;
 
 /**
  * Repository class for performing CRUD operations on {@link User} entities.
+ * @Author Inas
+ * @since 2nd september, 2024
  */
 public class UserRepository {
 

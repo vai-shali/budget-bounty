@@ -9,6 +9,8 @@ import hiber.hiber.repository.UserRepository;
 /**
  * Service class for managing user accounts.
  * Provides methods to perform CRUD operations and user-related queries.
+ * @author Inas
+ * @since 2nd September, 2024
  */
 public class UserService {
     private static UserRepository userRepository = new UserRepository();

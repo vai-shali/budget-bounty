@@ -13,6 +13,8 @@ import hiber.hiber.util.HibernateUtil;
 
 /**
  * Repository class for managing Bank entities.
+ * @Author Inas
+ * @Since 2nd September, 2024
  */
 public class BankRepository {
 
