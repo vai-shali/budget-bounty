@@ -11,6 +11,8 @@ import hiber.hiber.util.HibernateUtil;
 
 /**
  * Repository class for managing PaymentTransaction entities.
+ * @author Vaishali
+ * @since 2nd September, 2024
  */
 public class PaymentTransactionRepository {
 

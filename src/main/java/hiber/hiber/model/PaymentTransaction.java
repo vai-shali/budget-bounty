@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
  * The class also includes a Many-to-One relationship with the User class,
  * indicating that multiple transactions can be associated with a single user.
  *
- * @author Vishal
+ * @author Vaishali
  * @since 2nd September, 2024
  */
 @Entity
