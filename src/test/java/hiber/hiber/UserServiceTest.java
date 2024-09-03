@@ -20,6 +20,8 @@ import hiber.hiber.model.User;
  * This class tests the functionality of the {@link UserService} methods
  * using mock data and the actual service implementation.
  * </p>
+ * @author Vishal
+ * @since 2nd September, 2024
  */
 public class UserServiceTest {
 	private static UserService obj;

@@ -18,6 +18,8 @@ import hiber.hiber.model.User;
  * This class tests the functionality of the {@link UserRepository} methods
  * using mock data and the actual repository implementation.
  * </p>
+ * @author Vishal
+ * @since 2nd September, 2024
  */
 public class UserRepositoryTest {
 	private static UserRepository obj;
