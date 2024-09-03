@@ -20,6 +20,8 @@ import static org.mockito.Mockito.*;
  * they interact correctly with the {@link BankRepository} and handle data as expected.
  * It includes tests for retrieving, adding, updating, and deleting bank records.
  * </p>
+ * @author Amrisha
+ * @since 2nd September, 2024
  */
 public class BankServiceTest {
 

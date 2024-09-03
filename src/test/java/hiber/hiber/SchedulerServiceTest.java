@@ -20,6 +20,8 @@ import static org.mockito.Mockito.*;
  * This class tests the functionality of the {@link SchedulerService} methods
  * using mock data and Mockito for interaction with the {@link SchedulerRepository}.
  * </p>
+ * @author Amrisha
+ * @since 2nd September, 2024
  */
 public class SchedulerServiceTest {
 
