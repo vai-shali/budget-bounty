@@ -1,15 +1,11 @@
 package hiber.hiber;
 
-//import hiber.hiber.repository.SchedulerRepository;
-//import hiber.hiber.service.SchedulerService;
-
 import hiber.hiber.repository.PaymentTransactionRepository;
 import hiber.hiber.service.PaymentTransactionService;
-
 import hiber.hiber.model.PaymentTransaction;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,30 +14,52 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the {@link PaymentTransactionService} class.
+ * <p>
+ * This class tests the functionality of the {@link PaymentTransactionService} methods
+ * using mock data and Mockito for interaction with the {@link PaymentTransactionRepository}.
+ * </p>
+ */
 public class TransactionServiceTest {
 
     private PaymentTransactionRepository transactionRepository;
     private PaymentTransactionService transactionService;
 
+    /**
+     * Set up method to initialize the {@link PaymentTransactionRepository} mock and
+     * create a {@link PaymentTransactionService} instance before each test.
+     */
     @BeforeEach
     public void setUp() {
         transactionRepository = mock(PaymentTransactionRepository.class);
         transactionService = new PaymentTransactionService(transactionRepository);
     }
 
-    // Test saveTransaction method
+    /**
+     * Test for {@link PaymentTransactionService#saveTransaction(PaymentTransaction)} method.
+     * <p>
+     * Verifies that the method correctly saves a transaction and handles success cases.
+     * </p>
+     */
     @Test
     public void testSaveTransaction_Success() throws SQLException {
-    	PaymentTransaction transaction = new PaymentTransaction(); // Assume constructor sets default values
+        PaymentTransaction transaction = new PaymentTransaction(); // Assume constructor sets default values
 
         transactionService.saveTransaction(transaction);
 
         verify(transactionRepository, times(1)).save(transaction);
     }
 
+    /**
+     * Test for {@link PaymentTransactionService#saveTransaction(PaymentTransaction)} method.
+     * <p>
+     * Verifies that the method handles failure cases when saving a transaction due to a database error.
+     * </p>
+     */
     @Test
     public void testSaveTransaction_Failure() throws SQLException {
-    	PaymentTransaction transaction = new PaymentTransaction();
+        PaymentTransaction transaction = new PaymentTransaction();
         doThrow(new SQLException("Database error")).when(transactionRepository).save(transaction);
 
         transactionService.saveTransaction(transaction);
@@ -49,7 +67,12 @@ public class TransactionServiceTest {
         verify(transactionRepository, times(1)).save(transaction);
     }
 
-    // Test getTransactionById method
+    /**
+     * Test for {@link PaymentTransactionService#getTransactionById(int)} method.
+     * <p>
+     * Verifies that the method correctly retrieves a transaction by ID and handles success cases.
+     * </p>
+     */
     @Test
     public void testGetTransactionById_Success() throws SQLException {
         int transactionId = 1;
@@ -62,6 +85,12 @@ public class TransactionServiceTest {
         assertEquals(mockTransaction, result);
     }
 
+    /**
+     * Test for {@link PaymentTransactionService#getTransactionById(int)} method.
+     * <p>
+     * Verifies that the method handles failure cases when retrieving a transaction by ID due to a database error.
+     * </p>
+     */
     @Test
     public void testGetTransactionById_Failure() throws SQLException {
         int transactionId = 1;
@@ -72,7 +101,12 @@ public class TransactionServiceTest {
         assertNull(result);
     }
 
-    // Test getTransactionsByUserId method
+    /**
+     * Test for {@link PaymentTransactionService#getTransactionsByUserId(int)} method.
+     * <p>
+     * Verifies that the method correctly retrieves transactions by user ID and handles success cases.
+     * </p>
+     */
     @Test
     public void testGetTransactionsByUserId_Success() throws SQLException {
         int userId = 1;
@@ -86,6 +120,12 @@ public class TransactionServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Test for {@link PaymentTransactionService#getTransactionsByUserId(int)} method.
+     * <p>
+     * Verifies that the method handles failure cases when retrieving transactions by user ID due to a database error.
+     * </p>
+     */
     @Test
     public void testGetTransactionsByUserId_Failure() throws SQLException {
         int userId = 1;
@@ -96,7 +136,12 @@ public class TransactionServiceTest {
         assertNull(result);
     }
 
-    // Test getAllTransactions method
+    /**
+     * Test for {@link PaymentTransactionService#getAllTransactions()} method.
+     * <p>
+     * Verifies that the method correctly retrieves all transactions and handles success cases.
+     * </p>
+     */
     @Test
     public void testGetAllTransactions_Success() throws SQLException {
         List<PaymentTransaction> mockTransactions = new ArrayList<>();
@@ -109,6 +154,12 @@ public class TransactionServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Test for {@link PaymentTransactionService#getAllTransactions()} method.
+     * <p>
+     * Verifies that the method handles failure cases when retrieving all transactions due to a database error.
+     * </p>
+     */
     @Test
     public void testGetAllTransactions_Failure() throws SQLException {
         when(transactionRepository.findAll()).thenThrow(new SQLException("Database error"));
@@ -118,19 +169,30 @@ public class TransactionServiceTest {
         assertNull(result);
     }
 
-    // Test updateTransaction method
+    /**
+     * Test for {@link PaymentTransactionService#updateTransaction(PaymentTransaction)} method.
+     * <p>
+     * Verifies that the method correctly updates a transaction and handles success cases.
+     * </p>
+     */
     @Test
     public void testUpdateTransaction_Success() throws SQLException {
-    	PaymentTransaction transaction = new PaymentTransaction();
+        PaymentTransaction transaction = new PaymentTransaction();
 
         transactionService.updateTransaction(transaction);
 
         verify(transactionRepository, times(1)).update(transaction);
     }
 
+    /**
+     * Test for {@link PaymentTransactionService#updateTransaction(PaymentTransaction)} method.
+     * <p>
+     * Verifies that the method handles failure cases when updating a transaction due to a database error.
+     * </p>
+     */
     @Test
     public void testUpdateTransaction_Failure() throws SQLException {
-    	PaymentTransaction transaction = new PaymentTransaction();
+        PaymentTransaction transaction = new PaymentTransaction();
         doThrow(new SQLException("Database error")).when(transactionRepository).update(transaction);
 
         transactionService.updateTransaction(transaction);
@@ -138,7 +200,12 @@ public class TransactionServiceTest {
         verify(transactionRepository, times(1)).update(transaction);
     }
 
-    // Test deleteTransaction method
+    /**
+     * Test for {@link PaymentTransactionService#deleteTransaction(int)} method.
+     * <p>
+     * Verifies that the method correctly deletes a transaction and handles success cases.
+     * </p>
+     */
     @Test
     public void testDeleteTransaction_Success() throws SQLException {
         int transactionId = 1;
@@ -148,6 +215,12 @@ public class TransactionServiceTest {
         verify(transactionRepository, times(1)).delete(transactionId);
     }
 
+    /**
+     * Test for {@link PaymentTransactionService#deleteTransaction(int)} method.
+     * <p>
+     * Verifies that the method handles failure cases when deleting a transaction due to a database error.
+     * </p>
+     */
     @Test
     public void testDeleteTransaction_Failure() throws SQLException {
         int transactionId = 1;
