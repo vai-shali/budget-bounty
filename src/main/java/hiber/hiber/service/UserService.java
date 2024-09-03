@@ -6,13 +6,26 @@ import java.util.List;
 import hiber.hiber.model.User;
 import hiber.hiber.repository.UserRepository;
 
+/**
+ * Service class for managing user accounts.
+ * Provides methods to perform CRUD operations and user-related queries.
+ */
 public class UserService {
-	private static UserRepository userRepository = new UserRepository();
+    private static UserRepository userRepository = new UserRepository();
 
+    /**
+     * Default constructor to initialize the UserRepository.
+     * Creates a new instance of UserRepository.
+     */
     public UserService() {
         UserService.userRepository = new UserRepository();
     }
- // Save a new user
+
+    /**
+     * Saves a new user.
+     *
+     * @param user the User object to be saved
+     */
     public void saveUser(User user) {
         try {
             userRepository.save(user);
@@ -21,7 +34,13 @@ public class UserService {
             System.err.println("Error saving user: " + e.getMessage());
         }
     }
- // Find a user by ID
+
+    /**
+     * Finds a user by their ID.
+     *
+     * @param userId the ID of the user to retrieve
+     * @return the User object with the specified ID, or null if not found
+     */
     public User getUserById(int userId) {
         try {
             return userRepository.findById(userId);
@@ -30,7 +49,12 @@ public class UserService {
             return null;
         }
     }
- // Get all users
+
+    /**
+     * Retrieves all users.
+     *
+     * @return a list of all User objects, or null if an error occurs
+     */
     public List<User> getAllUsers() {
         try {
             return userRepository.findAll();
@@ -40,7 +64,11 @@ public class UserService {
         }
     }
 
-    // Update an existing user
+    /**
+     * Updates an existing user.
+     *
+     * @param user the User object with updated information
+     */
     public void updateUser(User user) {
         try {
             userRepository.update(user);
@@ -50,7 +78,11 @@ public class UserService {
         }
     }
 
-    // Delete a user by ID
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param userId the ID of the user to be deleted
+     */
     public void deleteUser(int userId) {
         try {
             userRepository.delete(userId);
@@ -60,7 +92,12 @@ public class UserService {
         }
     }
 
-    // Check if a user exists by email
+    /**
+     * Checks if a user exists by their email.
+     *
+     * @param email the email address to check
+     * @return true if a user with the given email exists, false otherwise
+     */
     public boolean existsByEmail(String email) {
         try {
             return userRepository.findByEmail(email) != null;
@@ -70,7 +107,13 @@ public class UserService {
         }
     }
 
-    // Find a user by email and password
+    /**
+     * Finds a user by their email and password.
+     *
+     * @param email the email address of the user
+     * @param password the password of the user
+     * @return the User object that matches the email and password, or null if not found
+     */
     public User findByEmailAndPassword(String email, String password) {
         try {
             return userRepository.findByEmailAndPassword(email, password);
