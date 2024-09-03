@@ -12,6 +12,8 @@ import hiber.hiber.util.HibernateUtil;
 
 /**
  * Repository class for managing Scheduler entities.
+ * @author Vaishali
+ * @since 2nd September 2024
  */
 public class SchedulerRepository {
 

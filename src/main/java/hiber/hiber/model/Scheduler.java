@@ -7,6 +7,8 @@ import java.util.Date;
 
 /**
  * Entity class representing a Scheduler for handling scheduled payments and bills.
+ * @Author Vaishali
+ * @Since 2nd September, 2024
  */
 @Entity
 @Table(name = "scheduler")

@@ -10,6 +10,8 @@ import hiber.hiber.repository.PaymentTransactionRepository;
 /**
  * Service class for managing payment transactions.
  * Provides methods to perform CRUD operations on payment transactions.
+ * @author Vaishali
+ * @since 2nd September, 2024
  */
 public class PaymentTransactionService {
     private final PaymentTransactionRepository paymentTransactionRepository;

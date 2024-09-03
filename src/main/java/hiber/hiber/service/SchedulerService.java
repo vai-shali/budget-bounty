@@ -9,6 +9,8 @@ import hiber.hiber.repository.SchedulerRepository;
 /**
  * Service class for managing scheduled payments and bills.
  * Provides methods to perform CRUD operations on scheduled payments.
+ * @author Vaishali
+ * @since 2nd September, 2024
  */
 public class SchedulerService {
 
