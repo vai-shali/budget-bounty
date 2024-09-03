@@ -10,9 +10,18 @@ import hiber.hiber.model.Scheduler;
 import hiber.hiber.model.User;
 import hiber.hiber.util.HibernateUtil;
 
+/**
+ * Repository class for managing Scheduler entities.
+ */
 public class SchedulerRepository {
-    
+
     // Admin methods
+
+    /**
+     * Retrieves all scheduled payments from the database.
+     *
+     * @return a list of all Scheduler entities.
+     */
     public List<Scheduler> getAllScheduledPayments() {
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
             String hql = "FROM Scheduler";
@@ -24,7 +33,11 @@ public class SchedulerRepository {
         }
     }
 
-    // Method to delete a scheduled bill by ID
+    /**
+     * Deletes a scheduled bill by its ID.
+     *
+     * @param schedulerId the ID of the scheduled bill to be deleted.
+     */
     public void deleteScheduler(int schedulerId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
@@ -41,14 +54,19 @@ public class SchedulerRepository {
             e.printStackTrace();
         }
     }
-    
-    //get scheduler by id
+
+    /**
+     * Retrieves a scheduled bill by its ID.
+     *
+     * @param schedulerId the ID of the scheduled bill to retrieve.
+     * @return the Scheduler entity with the specified ID, or null if not found.
+     */
     public Scheduler getSchedulerById(int schedulerId) {
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
             String hql = "FROM Scheduler WHERE schedulerId = :schedulerId";
             Query<Scheduler> query = session.createQuery(hql, Scheduler.class);
             query.setParameter("schedulerId", schedulerId);
-            return query.uniqueResult(); 
+            return query.uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -57,7 +75,12 @@ public class SchedulerRepository {
 
     // User methods
 
-    // Method to get scheduled bills for a specific user using userID
+    /**
+     * Retrieves scheduled bills for a specific user based on their user ID.
+     *
+     * @param userId the ID of the user whose scheduled bills are to be retrieved.
+     * @return a list of Scheduler entities associated with the specified user ID.
+     */
     public List<Scheduler> getSchedulersByUserId(int userId) {
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
             String hql = "FROM Scheduler WHERE user.userId = :userId";
@@ -70,7 +93,13 @@ public class SchedulerRepository {
         }
     }
 
-    // Method to get a scheduled bill for a user by bill name
+    /**
+     * Retrieves scheduled bills for a user based on the bill name.
+     *
+     * @param user the User entity whose scheduled bills are to be retrieved.
+     * @param billName the name of the bill to filter the scheduled bills.
+     * @return a list of Scheduler entities associated with the specified user ID and bill name.
+     */
     public List<Scheduler> getSchedulersByBillName(User user, String billName) {
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
             String hql = "FROM Scheduler WHERE user.userId = :userId AND billName = :billName";
@@ -84,7 +113,11 @@ public class SchedulerRepository {
         }
     }
 
-    // Adding a new scheduled bill
+    /**
+     * Adds a new scheduled bill to the database.
+     *
+     * @param scheduler the Scheduler entity to be added.
+     */
     public void addScheduler(Scheduler scheduler) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
@@ -99,7 +132,11 @@ public class SchedulerRepository {
         }
     }
 
-    // Method to update an existing scheduled bill
+    /**
+     * Updates an existing scheduled bill in the database.
+     *
+     * @param scheduler the Scheduler entity to be updated.
+     */
     public void updateScheduler(Scheduler scheduler) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
@@ -118,23 +155,26 @@ public class SchedulerRepository {
         }
     }
 
-//    // Printing all scheduled bills in the db
-//    public void printAllScheduledPayments() {
-//        try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
-//            String hql = "FROM Scheduler";
-//            Query<Scheduler> query = session.createQuery(hql, Scheduler.class);
-//            List<Scheduler> schedulers = query.list();
-//
-//            if (schedulers.isEmpty()) {
-//                System.out.println("No scheduled payments found.");
-//            } else {
-//                for (Scheduler scheduler : schedulers) {
-//                    System.out.println(scheduler);
-//                    System.out.println("----------------------------");
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    // Uncommented method for printing all scheduled payments
+    /*
+    // Method to print all scheduled bills in the database
+    public void printAllScheduledPayments() {
+        try (Session session = HibernateUtil.getSessionFactoryObject().openSession()) {
+            String hql = "FROM Scheduler";
+            Query<Scheduler> query = session.createQuery(hql, Scheduler.class);
+            List<Scheduler> schedulers = query.list();
+
+            if (schedulers.isEmpty()) {
+                System.out.println("No scheduled payments found.");
+            } else {
+                for (Scheduler scheduler : schedulers) {
+                    System.out.println(scheduler);
+                    System.out.println("----------------------------");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    */
 }
