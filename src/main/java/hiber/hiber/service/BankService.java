@@ -8,6 +8,8 @@ import hiber.hiber.repository.BankRepository;
 /**
  * Service class for managing bank accounts.
  * Provides methods to perform CRUD operations on bank accounts.
+ * @author Inas
+ * @since 2nd September,2024
  */
 public class BankService {
 
