@@ -35,6 +35,14 @@
 			<systemPath>
 				D:/ProgramFiles/oracleexe/app/oracle/product/11.2.0/server/jdbc/lib/ojdbc6.jar</systemPath>
 		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-all</artifactId>
+    <version>1.10.19</version>
+    <scope>test</scope>
+</dependency>
+
 		<dependency>
 		    <groupId>com.oracle.database.jdbc</groupId>
 		    <artifactId>ojdbc8</artifactId>
