@@ -9,7 +9,11 @@ import hiber.hiber.model.Scheduler;
 import hiber.hiber.model.User;
 import hiber.hiber.service.SchedulerService;
 
-
+/**
+ * Interacts with the Scheduler Service to get the scheduling job done on instruction of user
+ * @author Vaishali
+ * @since 3rd September,2024
+ */
 public class SchedulerController {
 
     private SchedulerService schedulerService = new SchedulerService();
@@ -58,6 +62,11 @@ public class SchedulerController {
         }
     }
 
+    /**
+     * retrieves scheduled payments by user ID and prints them
+     * @param null
+     * @return null
+     */
     private void viewScheduledPaymentsByUser() {
         List<Scheduler> schedulers = schedulerService.getSchedulersByUserId(user.getUserId());
         if (schedulers.isEmpty()) {
@@ -67,6 +76,11 @@ public class SchedulerController {
         }
     }
 
+    /**
+     * Retrieves schedueled payments by User's name, and prints them
+     * @param null
+     * @return void
+     */
     private void viewScheduledPaymentsByBillName() {
         System.out.print("Enter bill name: ");
         String billName = scanner.nextLine();
@@ -78,6 +92,11 @@ public class SchedulerController {
         }
     }
 
+    /**
+     * Schedules a bill
+     * @param null
+     * @return void
+     */
     private void addScheduler() {
     	String billType;
         Integer customerId = null;
@@ -212,6 +231,11 @@ public class SchedulerController {
         System.out.println("Scheduler added successfully.");
     }
 
+    /**
+     * Updates information of already scheduled bills
+     * @param null
+     * @return null
+     */
     private void updateScheduler() {
         System.out.print("Enter scheduler ID to be updated: ");
         Integer schedulerId = scanner.nextInt();
@@ -271,6 +295,11 @@ public class SchedulerController {
         System.out.println("Scheduler updated successfully.");
     }
 
+    /**
+     * Deletes the already scheduled bill
+     * @param null
+     * @return void
+     */
     private void deleteScheduler() {
         System.out.print("Enter bill name: ");
         String billName = scanner.nextLine();

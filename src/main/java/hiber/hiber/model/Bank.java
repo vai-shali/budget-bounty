@@ -13,6 +13,10 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
+/**
+ * @author Vishal
+ * @Since 2nd September, 2024
+ */
 @Entity
 @Table(name="bank")
 public class Bank {
