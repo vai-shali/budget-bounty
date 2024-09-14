@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "hibernate.id.new_generator_mappings",
+  "type": "java.lang.String",
+  "description": "A description for 'hibernate.id.new_generator_mappings'"
+}]}
