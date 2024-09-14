@@ -33,6 +33,6 @@ public interface SchedulerRepository extends JpaRepository<Scheduler, Integer> {
      * @return a list of Scheduler entities associated with the specified user ID and bill name.
      */
     @Query("FROM Scheduler WHERE user.userId = :userId AND billName = :billName")
-    List<Scheduler> findByUserUserIdAndBillName(Integer userId, String billName);
+    Scheduler findByUserUserIdAndBillName(Integer userId, String billName);
 }
 

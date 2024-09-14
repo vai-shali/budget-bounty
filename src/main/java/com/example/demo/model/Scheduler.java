@@ -307,7 +307,7 @@ public class Scheduler {
    *
    * @return the isRecurring flag
    */
-  public Integer isRecurring() {
+  public Integer getIsRecurring() {
       return isRecurring;
   }
 
@@ -316,7 +316,7 @@ public class Scheduler {
    *
    * @param isRecurring the isRecurring flag to set
    */
-  public void setRecurring(Integer isRecurring) {
+  public void setIsRecurring(Integer isRecurring) {
       this.isRecurring = isRecurring;
   }
 
@@ -379,7 +379,7 @@ public class Scheduler {
    *
    * @return the isPaid flag
    */
-  public Integer isPaid() {
+  public Integer getIsPaid() {
       return isPaid;
   }
 
@@ -388,7 +388,7 @@ public class Scheduler {
    *
    * @param isPaid the isPaid flag to set
    */
-  public void setPaid(Integer isPaid) {
+  public void setIsPaid(Integer isPaid) {
       this.isPaid = isPaid;
   }
 

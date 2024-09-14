@@ -18,7 +18,7 @@ import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 	
 	private final UserService userService;

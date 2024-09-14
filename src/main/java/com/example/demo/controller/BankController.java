@@ -19,7 +19,7 @@ import com.example.demo.service.BankService;
 
 @RestController
 //Combines @Controller and @ResponseBody to create RESTful web services
-@RequestMapping("/banks")
+@RequestMapping("/bank")
 //Base URL mapping for all endpoints in this controller
 
 public class BankController {
@@ -51,7 +51,7 @@ public class BankController {
     }
 
     //End point for creating a new bank
-    @PostMapping("/create")
+    @PostMapping("/add")
     public ResponseEntity<String> addBank(@RequestBody Bank bank) {
         try {
             bankService.addBank(bank);

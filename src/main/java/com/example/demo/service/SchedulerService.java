@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exception.AccessDeniedException;
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.Scheduler;
 import com.example.demo.model.User;
 import com.example.demo.repository.SchedulerRepository;
@@ -19,16 +22,11 @@ import com.example.demo.repository.SchedulerRepository;
 @Service
 public class SchedulerService {
 
-    private final SchedulerRepository schedulerRepository;
+	@Autowired
+    private SchedulerRepository schedulerRepository;
 
-    /**
-     * Default constructor to initialize the SchedulerRepository.
-     * Creates a new instance of SchedulerRepository.
-     */
     @Autowired
-    public SchedulerService(SchedulerRepository schedulerRepository) {
-        this.schedulerRepository = schedulerRepository;
-    }
+    private UserService userService;
 
 
     /**
@@ -36,8 +34,14 @@ public class SchedulerService {
      *
      * @return a list of all Scheduler objects
      */
-    public List<Scheduler> getAllScheduledPayments() {
-        return schedulerRepository.findAll();
+    public List<Scheduler> getAllScheduledPayments(int userId) {
+    	User existingUser = userService.getUserById(userId);
+        
+        if (existingUser != null && existingUser.getRole() == 1) {
+            return schedulerRepository.findAll(); // if User is an admin, return all schedulers
+        } else {
+            throw new AccessDeniedException("Access Denied! You do not have permission to view all schedulers.");
+        }
     }
 
     /**
@@ -46,6 +50,9 @@ public class SchedulerService {
      * @param schedulerId the ID of the scheduled bill to be deleted
      */
     public void deleteScheduler(int schedulerId) {
+    	if (!schedulerRepository.existsById(schedulerId)) {
+            throw new IllegalArgumentException("Scheduler not found with ID: " + schedulerId);
+        }
         schedulerRepository.deleteById(schedulerId);
     }
 
@@ -77,8 +84,8 @@ public class SchedulerService {
      * @param billName the name of the bill to search for
      * @return a list of Scheduler objects that match the given bill name for the specified user
      */
-    public List<Scheduler> getSchedulersByBillName(User user, String billName) {
-        return schedulerRepository.findByUserUserIdAndBillName(user.getUserId(), billName);
+    public Scheduler getSchedulersByBillName(int userId, String billName) {
+        return schedulerRepository.findByUserUserIdAndBillName(userId, billName);
     }
 
     /**
@@ -87,9 +94,17 @@ public class SchedulerService {
      * @param scheduler the Scheduler object to be added
      * @param user the User object associated with the scheduled bill
      */
-    public void addScheduler(Scheduler scheduler, User user) {
-        scheduler.setUser(user);
-        schedulerRepository.save(scheduler);
+    public void addScheduler(Scheduler scheduler, int userId) {
+    	// Check if the user exists using UserService
+    	User existingUser = userService.getUserById(userId);
+        if (existingUser!=null) {
+        	scheduler.setUser(existingUser);	// Associate the existing user with the scheduler
+        	validateScheduler(scheduler);
+            scheduler.setIsPaid(0);
+            schedulerRepository.save(scheduler);
+        } else {
+            throw new UserNotFoundException("User Not Found!");
+        }
     }
 
     /**
@@ -98,17 +113,30 @@ public class SchedulerService {
      * @param scheduler the Scheduler object with updated information
      * @param user the User object associated with the scheduled bill
      */
-    public void updateScheduler(Scheduler scheduler, User user) {
-        scheduler.setUser(user);
+    public void updateScheduler(int schedulerId, Scheduler updatedScheduler, int userId) {
+        
+        Scheduler existingScheduler = schedulerRepository.findById(schedulerId)
+                .orElseThrow(() -> new IllegalArgumentException("Scheduler does not exist!"));
 
-        // Check if the scheduler exists
-        if(!schedulerRepository.existsById(scheduler.getSchedulerId())) {
-        	System.out.println("Scheduler with ID " + scheduler.getSchedulerId() + " does not exist.");
-        	return;
+        // Check if the user is authorized to modify the scheduler
+        if (existingScheduler.getUser() == null || existingScheduler.getUser().getUserId() != userId) {
+            throw new AccessDeniedException("Not authorized to modify this scheduler!");
         }
-
-        // Proceeding with the update
-        schedulerRepository.save(scheduler);
+        existingScheduler.setBillType(updatedScheduler.getBillType());
+        existingScheduler.setCustomerId(updatedScheduler.getCustomerId());
+        existingScheduler.setBillName(updatedScheduler.getBillName());
+        existingScheduler.setPayeeAcc(updatedScheduler.getPayeeAcc());
+        existingScheduler.setAmount(updatedScheduler.getAmount());
+        existingScheduler.setDueDate(updatedScheduler.getDueDate());
+        existingScheduler.setScheduledDate(updatedScheduler.getScheduledDate());
+        existingScheduler.setIsRecurring(updatedScheduler.getIsRecurring());
+        existingScheduler.setFrequency(updatedScheduler.getFrequency());
+        existingScheduler.setEndAfter(updatedScheduler.getEndAfter());
+        existingScheduler.setEndBy(updatedScheduler.getEndBy());
+        existingScheduler.setIsPaid(updatedScheduler.getIsPaid());
+        
+        validateScheduler(existingScheduler);
+        schedulerRepository.save(existingScheduler);
     }
 
     /**
@@ -118,20 +146,57 @@ public class SchedulerService {
      * @param billName the name of the bill to be deleted
      * @return true if any bills were deleted, false otherwise
      */
-    public boolean deleteSchedulerByBillName(User user, String billName) {
-        List<Scheduler> schedulers = schedulerRepository.findByUserUserIdAndBillName(user.getUserId(), billName);
+    public boolean deleteSchedulerByBillName(int userId, String billName) {
+        Scheduler scheduler = schedulerRepository.findByUserUserIdAndBillName(userId, billName);
 
-        if (schedulers.isEmpty()) {
-            System.out.println("No scheduled bill found with the given bill name for the specified user.");
-            return false;
+        if (scheduler==null) {
+            throw new IllegalArgumentException("No scheduled bill found with the given bill name for the specified user.");
         }
 
-        // Delete all schedulers that match the bill name
-        for (Scheduler scheduler : schedulers) {
-            schedulerRepository.deleteById(scheduler.getSchedulerId());
-        }
+        // Delete scheduler that match the bill name
+        schedulerRepository.deleteById(scheduler.getSchedulerId());
 
         return true;
+    }
+    
+    //utility functions
+    public void validateScheduler(Scheduler scheduler) {
+    	Date currDate = new Date();
+    	String billName = scheduler.getBillName();
+    	
+    	if(scheduler.getUser().getBankDetails() == null) {
+    		throw new IllegalArgumentException("Bank account not linked!");
+    	}
+    	if(scheduler.getPayeeAcc()==null) {
+    		throw new IllegalArgumentException("Payee Account cannot be null!");
+    	}
+    	if(scheduler.getPayeeAcc()==null) {
+    		throw new IllegalArgumentException("Payee Account cannot be null!");
+    	}
+    	if(billName==null) {
+    		throw new IllegalArgumentException("Bill name cannot be null!");
+    	}
+    	if(getSchedulersByBillName(scheduler.getUser().getUserId(), billName) !=null) {
+    		throw new IllegalArgumentException("You already have a scheduled payment with this bill name! Enter a new bill name!");
+    	}
+    	if(scheduler.getAmount() <= 0) {
+    		throw new IllegalArgumentException("Invalid Payment Amount!");
+    	}
+    	if(scheduler.getDueDate()==null || scheduler.getScheduledDate()==null) {
+    		throw new IllegalArgumentException("Scheduled/Due date cannot be null!");
+    	}
+    	if(scheduler.getDueDate().before(currDate)) {
+    		throw new IllegalArgumentException("Due date must be after the current date!");
+    	} 
+    	if(scheduler.getScheduledDate().before(currDate)) {
+    		throw new IllegalArgumentException("Scheduled date must be after the current date!");
+    	} 
+    	if(scheduler.getScheduledDate().after(scheduler.getDueDate())) {
+    		throw new IllegalArgumentException("Scheduled date must be on/before the due date!");
+    	} 
+    	if(scheduler.getIsRecurring()==1 && scheduler.getFrequency()==null) {
+    		throw new IllegalArgumentException("Payment frequency must be set for recurring payments!");
+    	}
     }
 }
 

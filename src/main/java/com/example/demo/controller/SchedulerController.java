@@ -4,8 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exception.AccessDeniedException;
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.Scheduler;
 import com.example.demo.model.User;
 import com.example.demo.service.SchedulerService;
@@ -17,25 +27,27 @@ import com.example.demo.service.SchedulerService;
  * @since 12th September, 2024
  */
 @RestController
-@RequestMapping("/api/schedulers")
+@RequestMapping("/scheduler")
 public class SchedulerController {
 
-    private final SchedulerService schedulerService;
-
-    @Autowired
-    public SchedulerController(SchedulerService schedulerService) {
-        this.schedulerService = schedulerService;
-    }
+	@Autowired
+    private SchedulerService schedulerService;
 
     /**
      * Retrieves all scheduled payments (admin functionality).
      *
      * @return a list of all scheduled payments
      */
-    @GetMapping("/all")
-    public ResponseEntity<List<Scheduler>> getAllScheduledPayments() {
-        List<Scheduler> schedulers = schedulerService.getAllScheduledPayments();
-        return ResponseEntity.ok(schedulers);
+    @GetMapping("/list/{userId}")
+    public ResponseEntity<?> getAllScheduledPayments(@PathVariable int userId) {
+    	try {
+    		List<Scheduler> schedulers = schedulerService.getAllScheduledPayments(userId);
+            return ResponseEntity.ok(schedulers);
+    	} catch (AccessDeniedException e) {
+        	return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+        }
     }
 
     /**
@@ -70,12 +82,13 @@ public class SchedulerController {
      * @return a list of scheduled bills matching the bill name for the user
      */
     @GetMapping("/user/{userId}/bill")
-    public ResponseEntity<List<Scheduler>> getSchedulersByBillName(@PathVariable int userId, @RequestParam String billName) {
-        User user = new User(); // Assuming User entity is already created, replace with actual User retrieval
-        user.setUserId(userId);
-
-        List<Scheduler> schedulers = schedulerService.getSchedulersByBillName(user, billName);
-        return ResponseEntity.ok(schedulers);
+    public ResponseEntity<?> getSchedulersByBillName(@PathVariable int userId, @RequestParam String billName) {
+        Scheduler scheduler = schedulerService.getSchedulersByBillName(userId, billName);
+        if (scheduler == null) {
+            // Return 404 status with a message when no scheduler is found
+            return ResponseEntity.status(404).body("No scheduled payment found for the specified bill name and user.");
+        }
+        return ResponseEntity.ok(scheduler);
     }
 
     /**
@@ -87,11 +100,16 @@ public class SchedulerController {
      */
     @PostMapping("/add/{userId}")
     public ResponseEntity<String> addScheduler(@RequestBody Scheduler scheduler, @PathVariable int userId) {
-        User user = new User(); // Assuming User entity is already created, replace with actual User retrieval
-        user.setUserId(userId);
-
-        schedulerService.addScheduler(scheduler, user);
-        return ResponseEntity.status(201).body("Scheduler added successfully.");
+        try {
+            schedulerService.addScheduler(scheduler, userId);
+            return ResponseEntity.status(201).body("Scheduler added successfully.");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+        	return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+        }
     }
 
     /**
@@ -101,13 +119,19 @@ public class SchedulerController {
      * @param userId the ID of the user associated with the scheduled bill
      * @return a response entity with the status of the update
      */
-    @PutMapping("/update/{userId}")
-    public ResponseEntity<String> updateScheduler(@RequestBody Scheduler scheduler, @PathVariable int userId) {
-        User user = new User(); // Assuming User entity is already created, replace with actual User retrieval
-        user.setUserId(userId);
-
-        schedulerService.updateScheduler(scheduler, user);
-        return ResponseEntity.ok("Scheduler updated successfully.");
+    @PutMapping("/update/{schedulerId}")
+    public ResponseEntity<String> updateScheduler(@PathVariable int schedulerId, @RequestBody Scheduler scheduler, @RequestParam int userId) {
+        try {
+            schedulerService.updateScheduler(schedulerId, scheduler, userId);
+            return ResponseEntity.status(201).body("Scheduler added successfully.");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+        	return ResponseEntity.status(404).body(e.getMessage());
+        } 
+        catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+        }
     }
 
     /**
@@ -118,8 +142,14 @@ public class SchedulerController {
      */
     @DeleteMapping("/delete/{schedulerId}")
     public ResponseEntity<String> deleteScheduler(@PathVariable int schedulerId) {
-        schedulerService.deleteScheduler(schedulerId);
-        return ResponseEntity.ok("Scheduler deleted successfully.");
+    	try {
+            schedulerService.deleteScheduler(schedulerId);
+            return ResponseEntity.ok("Scheduler deleted successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+        }
     }
 
     /**
@@ -131,11 +161,13 @@ public class SchedulerController {
      */
     @DeleteMapping("/delete/user/{userId}/bill")
     public ResponseEntity<String> deleteSchedulerByBillName(@PathVariable int userId, @RequestParam String billName) {
-        User user = new User(); // Assuming User entity is already created, replace with actual User retrieval
-        user.setUserId(userId);
-
-        boolean deleted = schedulerService.deleteSchedulerByBillName(user, billName);
-        return deleted ? ResponseEntity.ok("Scheduled bill(s) deleted successfully.")
-                : ResponseEntity.status(404).body("No scheduled bill found with the given bill name.");
+    	try {
+    		schedulerService.deleteSchedulerByBillName(userId, billName);
+    		return ResponseEntity.ok("Scheduler deleted successfully.");
+    	} catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+        }
     }
 }

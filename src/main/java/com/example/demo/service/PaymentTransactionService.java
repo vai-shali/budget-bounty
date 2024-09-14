@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exception.TransactionNotFoundException;
 import com.example.demo.model.PaymentTransaction;
 import com.example.demo.repository.PaymentTransactionRepository;
 
@@ -17,16 +18,9 @@ import com.example.demo.repository.PaymentTransactionRepository;
  */
 @Service
 public class PaymentTransactionService {
-    private final PaymentTransactionRepository paymentTransactionRepository;
-
-    /**
-     * Default constructor to initialize the PaymentTransactionRepository.
-     * Creates a new instance of PaymentTransactionRepository.
-     */
-    @Autowired
-    public PaymentTransactionService(PaymentTransactionRepository paymentTransactionRepository) {
-        this.paymentTransactionRepository = paymentTransactionRepository;
-    }
+	
+	@Autowired
+    private PaymentTransactionRepository paymentTransactionRepository;
 
     /**
      * Saves a new payment transaction.
@@ -45,8 +39,8 @@ public class PaymentTransactionService {
      * @return the PaymentTransaction object with the specified ID, or null if not found
      */
     public PaymentTransaction getTransactionById(int transactionId) {
-    	Optional<PaymentTransaction> transaction = paymentTransactionRepository.findById(transactionId);
-        return transaction.orElse(null);
+    	return paymentTransactionRepository.findById(transactionId)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction not found with ID: " + transactionId));
     }
 
     /**
@@ -56,7 +50,11 @@ public class PaymentTransactionService {
      * @return a list of PaymentTransaction objects associated with the specified user ID, or null if an error occurs
      */
     public List<PaymentTransaction> getTransactionsByUserId(int userId) {
-        return paymentTransactionRepository.findByUserUserId(userId);
+    	List<PaymentTransaction> transactions = paymentTransactionRepository.findByUserUserId(userId);
+    	if(transactions.size()==0) {
+    		throw new TransactionNotFoundException("Transactions not found for User ID: " + userId);
+    	}
+    	return transactions;
     }
 
     /**
@@ -65,7 +63,11 @@ public class PaymentTransactionService {
      * @return a list of all PaymentTransaction objects, or null if an error occurs
      */
     public List<PaymentTransaction> getAllTransactions() {
-        return paymentTransactionRepository.findAll();
+        List<PaymentTransaction> transactions = paymentTransactionRepository.findAll();
+    	if(transactions.size()==0) {
+    		throw new TransactionNotFoundException("No transactions found!");
+    	}
+    	return transactions;
     }
 
     /**
@@ -74,7 +76,10 @@ public class PaymentTransactionService {
      * @param transaction the PaymentTransaction object with updated information
      */
     public void updateTransaction(PaymentTransaction transaction) {
-    	paymentTransactionRepository.save(transaction);
+    	if (!paymentTransactionRepository.existsById(transaction.getTransactionId())) {
+            throw new TransactionNotFoundException("Transaction not found with ID: " + transaction.getTransactionId());
+        }
+        paymentTransactionRepository.save(transaction);
         System.out.println("Transaction updated successfully.");
     }
 
@@ -84,7 +89,11 @@ public class PaymentTransactionService {
      * @param transactionId the ID of the transaction to be deleted
      */
     public void deleteTransaction(int transactionId) {
-    	paymentTransactionRepository.deleteById(transactionId);
-        System.out.println("Transaction deleted successfully.");
+    	try {
+            paymentTransactionRepository.deleteById(transactionId);
+            System.out.println("Transaction deleted successfully.");
+        } catch (EmptyResultDataAccessException e) {
+            throw new TransactionNotFoundException("Transaction not found with ID: " + transactionId);
+        }
     }
 }
