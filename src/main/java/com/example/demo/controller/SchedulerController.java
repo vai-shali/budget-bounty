@@ -123,14 +123,14 @@ public class SchedulerController {
     public ResponseEntity<String> updateScheduler(@PathVariable int schedulerId, @RequestBody Scheduler scheduler, @RequestParam int userId) {
         try {
             schedulerService.updateScheduler(schedulerId, scheduler, userId);
-            return ResponseEntity.status(201).body("Scheduler added successfully.");
+            return ResponseEntity.status(201).body("Scheduler updated successfully.");
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (IllegalArgumentException e) {
         	return ResponseEntity.status(404).body(e.getMessage());
         } 
         catch (Exception e) {
-            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+            return ResponseEntity.status(500).body("Internal server error occurred!\n"+e.getMessage()); // Generic 500 error
         }
     }
 
@@ -148,7 +148,7 @@ public class SchedulerController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Internal server error occurred!"); // Generic 500 error
+            return ResponseEntity.status(500).body("Internal server error occurred! "+e.getLocalizedMessage()); // Generic 500 error
         }
     }
 

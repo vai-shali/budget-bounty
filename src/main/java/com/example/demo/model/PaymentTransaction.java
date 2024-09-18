@@ -84,8 +84,12 @@ public class PaymentTransaction {
      */
     @Column(name = "reference_number")
     private String referenceNumber;
+    
+    @Column(name = "status")
+    private String status;
 
-    /**
+    
+	/**
      * Default constructor for JPA.
      */
     public PaymentTransaction() {
@@ -103,10 +107,11 @@ public class PaymentTransaction {
      * @param transactionType   The type of transaction (e.g., debit, credit).
      * @param amount            The amount of money involved in the transaction.
      * @param referenceNumber   The reference number associated with the transaction.
+     * @param status   			The payment status indicating transaction- success/failure
      */
     public PaymentTransaction(User user, Date transactionDate, String transactionName,
                               String fromAccountNumber, String toAccountNumber, String transactionType,
-                              Double amount, String referenceNumber) {
+                              Double amount, String referenceNumber, String status) {
         this.user = user;
         this.transactionDate = transactionDate;
         this.transactionName = transactionName;
@@ -115,6 +120,7 @@ public class PaymentTransaction {
         this.transactionType = transactionType;
         this.amount = amount;
         this.referenceNumber = referenceNumber;
+        this.status = status;
     }
 
     // Getters and setters for all fields
@@ -190,6 +196,14 @@ public class PaymentTransaction {
     public void setReferenceNumber(String referenceNumber) {
         this.referenceNumber = referenceNumber;
     }
+    
+    public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
     /**
      * Returns a string representation of the PaymentTransaction object.
@@ -205,7 +219,8 @@ public class PaymentTransaction {
                 ", toAccountNumber='" + toAccountNumber + '\'' +
                 ", transactionType='" + transactionType + '\'' +
                 ", amount=" + amount +
-                ", referenceNumber='" + referenceNumber + '\'';
+                ", referenceNumber='" + referenceNumber + '\''+
+                ", status='" + status + '\'';
     }
 }
 

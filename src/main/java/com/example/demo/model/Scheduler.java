@@ -96,8 +96,14 @@ public class Scheduler {
   /**
    * Indicates if the scheduled payment has been paid.
    */
-  @Column(name = "is_paid")
-  private Integer isPaid; // Consider changing this to a boolean if appropriate
+  @Column(name = "num_of_payments")
+  private Integer numOfPayments;
+  
+  /**
+   * Indicates if the scheduled payment is active/completed/cancelled.
+   */
+  @Column(name = "status")
+  private String status;
 
   /**
    * Default constructor for Scheduler.
@@ -123,7 +129,7 @@ public class Scheduler {
    */
   public Scheduler(User user, String billType, Integer customerId, String billName,
                    String payeeAcc, double amount, Date dueDate, Date scheduledDate, Integer isRecurring,
-                   String frequency, Integer endAfter, Date endBy, Integer isPaid) {
+                   String frequency, Integer endAfter, Date endBy, Integer numOfPayments, String status) {
 //      this.schedulerId = schedulerId;
       this.user = user;
       this.billType = billType;
@@ -137,7 +143,8 @@ public class Scheduler {
       this.frequency = frequency;
       this.endAfter = endAfter;
       this.endBy = endBy;
-      this.isPaid = isPaid;
+      this.numOfPayments = numOfPayments;
+      this.status=status;
   }
 
   /**
@@ -379,8 +386,8 @@ public class Scheduler {
    *
    * @return the isPaid flag
    */
-  public Integer getIsPaid() {
-      return isPaid;
+  public Integer getNumOfPayments() {
+      return numOfPayments;
   }
 
   /**
@@ -388,8 +395,16 @@ public class Scheduler {
    *
    * @param isPaid the isPaid flag to set
    */
-  public void setIsPaid(Integer isPaid) {
-      this.isPaid = isPaid;
+  public void setNumOfPayments(Integer numOfPayments) {
+      this.numOfPayments = numOfPayments;
+  }
+  
+  public void setStatus(String status) {
+	  this.status=status;
+  }
+  
+  public String getStatus() {
+	  return status;
   }
 
   @Override
@@ -397,7 +412,8 @@ public class Scheduler {
       return "Scheduler [schedulerId=" + schedulerId + ", billType=" + billType
               + ", customerId=" + customerId + ", billName=" + billName + ", payeeAcc=" + payeeAcc + ", amount="
               + amount + ", dueDate=" + dueDate + ", scheduledDate=" + scheduledDate + ", isRecurring=" + isRecurring
-              + ", frequency=" + frequency + ", endAfter=" + endAfter + ", endBy=" + endBy + ", isPaid=" + isPaid + "]";
+              + ", frequency=" + frequency + ", endAfter=" + endAfter + ", endBy=" + endBy + ", numOfPayments=" 
+              + numOfPayments + ", status=" + status+"]";
   }
 }
 

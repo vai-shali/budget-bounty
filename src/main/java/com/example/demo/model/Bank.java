@@ -18,6 +18,7 @@ public class Bank {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generate the primary key
 	@Column(name="bank_id")
     private int bankId;
+	
     @Column(name="bank_name")
 	private String bankName;
     private String ifsc;

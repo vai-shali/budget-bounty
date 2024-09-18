@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Bank;
@@ -49,23 +50,35 @@ public class BankController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Bank> getBankByUserId(@PathVariable int userId) {
+        try {
+            Bank bank = bankService.getBankByUserId(userId);
+            return ResponseEntity.ok(bank);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     //End point for creating a new bank
     @PostMapping("/add")
-    public ResponseEntity<String> addBank(@RequestBody Bank bank) {
+    public ResponseEntity<String> addBank(@RequestBody Bank bank, @RequestParam int userId) {
         try {
-            bankService.addBank(bank);
+            bankService.addBank(bank, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Bank added successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     //End point for updating an existing bank
-    @PutMapping("/update")
-    public ResponseEntity<String> updateBank(@RequestBody Bank bank) {
+    @PutMapping("/update/{bankId}")
+    public ResponseEntity<String> updateBank(@RequestBody Bank bank, @PathVariable int bankId) {
         try {
-            bankService.updateBank(bank);
+            bankService.updateBank(bank, bankId);
             return ResponseEntity.ok("Bank updated successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

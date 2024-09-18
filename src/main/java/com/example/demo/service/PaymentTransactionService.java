@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,6 +29,10 @@ public class PaymentTransactionService {
      * @param transaction the PaymentTransaction object to be saved
      */
     public void saveTransaction(PaymentTransaction transaction) {
+    	if(transaction.getReferenceNumber()==null)
+    		transaction.setReferenceNumber(UUID.randomUUID().toString());
+    	if(transaction.getStatus()==null)
+    		transaction.setStatus("success");
     	paymentTransactionRepository.save(transaction);
         System.out.println("Transaction saved successfully.");
     }

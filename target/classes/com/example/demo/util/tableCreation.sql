@@ -321,3 +321,84 @@ BEGIN
 END;
 
 /
+
+
+
+-- NEW DB UPDATES FOR FINAL BACKEND
+
+select * from scheduler;
+select * from users;
+select * from transaction;
+select * from bank;
+select * from reward;
+
+ALTER TABLE transaction ADD (status VARCHAR2(50));
+update transaction set status='success';
+
+ALTER TABLE Scheduler
+DROP COLUMN is_paid;
+
+ALTER TABLE Scheduler
+ADD num_of_payments NUMBER DEFAULT 0;
+
+ALTER TABLE Scheduler
+ADD status VARCHAR2(50);
+
+CREATE TABLE reward (
+    reward_id int PRIMARY KEY,
+    user_id int NOT NULL,
+    total_points int DEFAULT 0,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_reward FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+);
+
+
+CREATE SEQUENCE reward_seq
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+CREATE OR REPLACE TRIGGER trg_reward_id
+BEFORE INSERT ON reward
+FOR EACH ROW
+BEGIN
+    IF :NEW.reward_id IS NULL THEN
+        SELECT reward_seq.NEXTVAL
+        INTO :NEW.reward_id
+        FROM dual;
+    END IF;
+END;
+
+
+-- notification table
+CREATE TABLE notification (
+    notif_id INT PRIMARY KEY,
+    user_id INT NOT NULL, -- Reference to the user receiving the notification
+    scheduler_id INT, -- Reference to the scheduler record related to the notification
+    notif_type VARCHAR2(50) NOT NULL, -- Type of notification (e.g., 'Reminder', 'Error', 'Success')
+    message VARCHAR2(500) NOT NULL, -- The content of the notification
+    notif_date DATE NOT NULL, -- Date and time when the notification was created
+    read_status INT DEFAULT 0, -- Indicates whether the notification has been read by the user
+    email_status INT DEFAULT 0, -- Indicates whether the notification has been sent to the user's email
+    CONSTRAINT fk_user_notification FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT fk_scheduler_notification FOREIGN KEY (scheduler_id) REFERENCES scheduler(scheduler_id)
+);
+
+CREATE SEQUENCE notif_seq
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+    
+CREATE OR REPLACE TRIGGER trg_notif_id
+BEFORE INSERT ON notification
+FOR EACH ROW
+BEGIN
+    IF :NEW.notif_id IS NULL THEN
+        SELECT notif_seq.NEXTVAL
+        INTO :NEW.notif_id
+        FROM dual;
+    END IF;
+END;

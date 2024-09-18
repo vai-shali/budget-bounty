@@ -7,21 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Bank;
+import com.example.demo.model.User;
 import com.example.demo.repository.BankRepository;
+import com.example.demo.repository.UserRepository;
 
 @Service
 public class BankService {
 
-    private final BankRepository bankRepository;
+	@Autowired
+    private BankRepository bankRepository;
 
-    /**
-     * Constructor to initialize the BankRepository.
-     * Creates a new instance of BankRepository.
-     */
     @Autowired
-    public BankService(BankRepository bankRepository) {
-        this.bankRepository = bankRepository;
-    }
+    private UserRepository userRepository;
 
     /**
      * Retrieves a list of all bank accounts.
@@ -43,6 +40,11 @@ public class BankService {
         Optional<Bank> bank = bankRepository.findById(bankId);
         return bank.orElseThrow(() -> new IllegalArgumentException("Bank with ID " + bankId + " not found."));
     }
+    
+    public Bank getBankByUserId(int userId) {
+    	Optional<Bank> bank = bankRepository.findByUserUserId(userId);
+        return bank.orElseThrow(() -> new IllegalArgumentException("Bank account nout found for user!"));
+    }
 
     /**
      * Adds a new bank account.
@@ -50,12 +52,17 @@ public class BankService {
      * @param bank the Bank object to be added
      * @throws IllegalArgumentException if both account number and UPI ID are null
      */
-    public void addBank(Bank bank) {
-        // Perform any necessary validation or business logic here
+    public void addBank(Bank bank, int userId) {
+        
+    	User existingUser = userRepository.findById(userId).orElse(null);
+    	if(existingUser==null) {
+    		throw new IllegalArgumentException("User does not exist!");
+    	}
+    	
         if (bank.getAccountNumber() == null && bank.getUpiId() == null) {
             throw new IllegalArgumentException("Either account number or UPI ID must be provided.");
         }
-
+        bank.setUser(existingUser);
         bankRepository.save(bank);
     }
 
@@ -65,11 +72,24 @@ public class BankService {
      * @param bank the Bank object with updated information
      * @throws IllegalArgumentException if the bank account with the specified ID is not found
      */
-    public void updateBank(Bank bank) {
-        if(!bankRepository.existsById(bank.getBankId())) {
+    public void updateBank(Bank bank, int bankId) {
+        if(!bankRepository.existsById(bankId)) {
         	throw new IllegalArgumentException("Bank with ID " + bank.getBankId() + " not found.");
         }
-        bankRepository.save(bank);
+        
+        Bank existingBank = bankRepository.findById(bankId).orElseThrow(() -> 
+        new IllegalArgumentException("Bank with ID " + bankId + " not found."));
+
+	    // Update the existing bank entity with the new values
+	    existingBank.setBankName(bank.getBankName());
+	    existingBank.setIfsc(bank.getIfsc());
+	    existingBank.setAccountNumber(bank.getAccountNumber());
+	    existingBank.setUpiId(bank.getUpiId());
+	    existingBank.setAccountType(bank.getAccountType());
+	    existingBank.setBalance(bank.getBalance());
+//	    existingBank.setUser(bank.getUser());
+        
+        bankRepository.save(existingBank);
     }
 
     /**
@@ -84,6 +104,17 @@ public class BankService {
         }
 
         bankRepository.deleteById(bankId);
+    }
+    
+    //FUNCTIONS FOR MAKE PAYMENT SERVICE
+    public void updateBalance(int userId, double amount) {
+    	Bank bank=bankRepository.findByUserUserId(userId).orElse(null);
+    	if(bank==null) {
+    		throw new IllegalArgumentException("User not found with user ID: "+userId);
+    	}
+    	bank.setBalance(amount);
+    	bankRepository.save(bank);
+    	
     }
 }
 
