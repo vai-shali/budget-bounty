@@ -188,12 +188,12 @@ public class SchedulerService {
     	if(scheduler.getDueDate()==null || scheduler.getScheduledDate()==null) {
     		throw new IllegalArgumentException("Scheduled/Due date cannot be null!");
     	}
-    	if(scheduler.getDueDate().before(currDate)) {
-    		throw new IllegalArgumentException("Due date must be after the current date!");
-    	} 
-    	if(scheduler.getScheduledDate().before(currDate)) {
-    		throw new IllegalArgumentException("Scheduled date must be after the current date!");
-    	} 
+//    	if(scheduler.getDueDate().before(currDate)) {
+//    		throw new IllegalArgumentException("Due date must be after the current date!");
+//    	} 
+//    	if(scheduler.getScheduledDate().before(currDate)) {
+//    		throw new IllegalArgumentException("Scheduled date must be after the current date!");
+//    	} 
     	if(scheduler.getScheduledDate().after(scheduler.getDueDate())) {
     		throw new IllegalArgumentException("Scheduled date must be on/before the due date!");
     	} 

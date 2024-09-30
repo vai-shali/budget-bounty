@@ -80,7 +80,7 @@ public class PaymentService {
                 
                 // 6. Update reward points
                 System.out.println("STEP 6\n-------------------------------------");
-                int points = (int) (amount/10);
+                int points = (int) (amount/100);
                 rewardService.addPoints(points, user.getUserId()); // Add reward points for successful payment
                 
                 // 9. Handle recurring or one-time payments

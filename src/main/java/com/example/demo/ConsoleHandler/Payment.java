@@ -21,7 +21,7 @@ public class Payment {
     	Scanner sc=new Scanner(System.in);
     	System.out.println(LocalDate.now());
     	System.out.println("PAYMENT TEST");
-    	paymentService.makePayment();
+//    	paymentService.makePayment();
 //    	System.out.println("make payment?(0/1)");
 //    	int n=sc.nextInt();
 //    	if(n==1)
@@ -30,7 +30,7 @@ public class Payment {
 //    		System.out.println("payment paused");
     	
     	System.out.println("REMINDER TEST");
-    	paymentService.addReminder();
+//    	paymentService.addReminder();
 //    	System.out.println("make reminders?(0/1)");
 //    	int n1=sc.nextInt();
 //    	if(n1==1)
